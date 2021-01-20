@@ -13,7 +13,7 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: main.tex
-          post_compile: "cp build/main.pdf web/"
+          post_compile: "cp main.pdf web/"
       - name: Push to gh-pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:

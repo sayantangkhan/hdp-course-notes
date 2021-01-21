@@ -18,7 +18,66 @@
 \maketitle
 \tableofcontents
 
+\section{Introduction}
+\label{sec:introduction}
 
+High dimensional probability is the study of random variables taking values in $\RR^n$ for large but fixed values of $n$.
+While this area has always been studied by classical probability theorists, it has also attracted attention from computer scientists, especially since the design and analysis of fast probabilistic algorithms requires tools and theorems from this field.
+A classical result that arises from pure mathematics, but has several real life applications is Dvoretzky's theorem, whose statement does not involve any probability at all, and yet the proof uses concentration inequalities.
+\begin{theorem}[Dvoretzky's theorem]
+  Let $X$ be an $n$-dimensional normed vector space. Then for any $\varepsilon > 0$, there exists a constant $c(\varepsilon) > 0$, and a linear subspace $E$ of $X$ such that, $\dim(E) \geq c(\varepsilon) \log(n)$, and for all $v \in E$, the following inequality relating the ambient norm and the Euclidean norm on $E$.
+  \begin{align*}
+    (1-\varepsilon) \norm{v}_2 \leq \frac{\norm{v}_X}{M(X)} \leq (1+\varepsilon)\norm{x}_2
+  \end{align*}
+  Where $M(X)$ is a scaling factor that depends only on $X$, and $\norm{\cdot}_X$ and $\norm{\cdot}_2$ are the ambient and Euclidean norm on $E$.
+\end{theorem}
+
+\begin{proof}[Idea of proof]
+  Pick a random subspace, and then show that with very high probability, the given inequality holds.
+  We'll prove the result in full detail later in the course.
+\end{proof}
+
+\begin{remark}
+  \label{rem1}
+  When the norm on $X$ is the $\ell^1$ norm, the lower bound on the dimension of $E$ can be improved to be linear in $c(\varepsilon) n$.
+\end{remark}
+
+\paragraph{A computer science application of Dvoretzky's theorem}
+
+Consider a subset $S$ of $\ell_2^N$, given by inequalities involving the norms of elements in $\ell_2^N$.
+Suppose that we are required to optimize a linear function $f$ on the set $S$.
+Since $S$ is given by inequalities involve the $\ell^2$-norm, it will be and intersection of interiors of ellipsoids, and consequently, optimizing $f$ will be computationally expensive.
+But we can get around the computational expense by embedding $\ell_2^N$ into $\ell_1^M$, where $M$ is $O(N)$, by Remark \ref{rem1}.
+Since this embedding doesn't distort distances too much, we can replace $S$ with a nearby polytope, given by inequalities involving the $\ell^1$ norm instead.
+Optimizing a linear function on a polytope is computationally much easier, thanks to linear programming.
+
+\paragraph{Empirical covariance estimation}
+
+Let $X$ be an $\RR^n$-valued random variable, and let $\E(X) = 0$.
+The covariance of $X$ is $\E(X^{\top}X)$, and will be denoted by $A$.
+Let $\left\{ X_1, X_2, \ldots, X_m \right\}$ be i.i.d. samples of $X$.
+We define the sample covariance $A_m$ in the following manner.
+\begin{align*}
+  A_n = \frac{\sum_{i=1}^m X_i^{\top}X_i}{m}
+\end{align*}
+As $m$ tends to infinity, the sample covariance $A_m$ will approach the true covariance, as we would expect the law of large numbers to predict.
+A harder, and more interesting question is to determine how many samples do we need to take to be within some threshold of the true covariance with high probability.
+
+Just like in the scalar setting, one answers the question by proving appropriate concentration inequalities for matrix valued random variables.
+Here is the most general set up: Let $A_m$ and $A$ be matrices mapping some normed space $X$ to some other normed space $Y$.
+We define the distance between $A_m$ and $A$ using the operator norm.
+\begin{align*}
+  \norm{A_m - A}_{\mathrm{op}} &= \max_{\norm{v}_x \leq 1} \norm{(A_m-A)v}_Y \\
+                               &= \max_{\norm{v}_x \leq 1} \max_{\norm{w}_{Y^{\ast}} \leq 1} w\left( (A_m - A)v \right) \\
+                               &= \max_{\substack{(v, w) \in X \times Y^{\ast} \\ \norm{v} \leq 1 \\ \norm{w} \leq 1}} w((A_m - A)v)
+\end{align*}
+We can consider $w((A_m -A)v)$ to be a family of scalar random variables parameterized by points in $X \times Y^{\ast}$, i.e. a random process $V_u$ parameterized by $u \in X \times Y^{\ast}$.
+This leads to the following two questions.
+\begin{enumerate}[(i)]
+\item How to bound $\E \max V_u$.
+\item How to bound $\P(\max V_u - \E \max V_u)$.
+\end{enumerate}
+It turns out one can often answer (ii) without answering (i)m which may seem surprising given that the most elementary concentration inequalities involve the expectation (i.e. Markov's inequality).
 
 % \include{Notation}
 

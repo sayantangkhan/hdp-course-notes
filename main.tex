@@ -78,6 +78,103 @@ This leads to the following two questions.
 \item How to bound $\P(\left| \max V_u - \E \max V_u \right| \geq t)$.
 \end{enumerate}
 It turns out one can often answer (ii) without answering (i)m which may seem surprising given that the most elementary concentration inequalities involve the expectation (i.e. Markov's inequality).
+The starting point in answering (ii) is understanding \emph{concentration of measure}.
+
+\section{Concentration of measure}
+\label{sec:conc-meas}
+
+Concentration of measure was originally observed Lévy, but first used by Milman in the early 70s.
+Roughly speaking, concentration of measure is the following phenomenon: suppose $(X, d, \P)$ is a metric space endowed with a probability measure and $f: X \to \RR$ is a ``nice'' function.
+Then the value of $f$ is essentially constant, i.e. there exists some constant $M(f)$ such that for small enough $\varepsilon$, the following probability bound holds.
+\begin{align*}
+  \P(|f(x) - M(f)| < \varepsilon) \ll 1
+\end{align*}
+Usually by nice, we will mean $1$-Lipschitz, although similar results hold for a more general class of functions like convex or quasi-convex functions.
+We begin with the simplest version of measure concentration.
+
+\paragraph{Concentration for linear functions}
+
+Let the metric space $X$ in this setting be $\R^n$ for some fixed $n$, and let $\{X_1, \ldots, X_n \}$ be i.i.d scalar random variables.
+Let $f: \R^n \to \R$ be a linear function, given by taking inner product with some vector $\mathbf{a}$. We define $Y$ to be $\sum_{i=1}^n a_i X_i$.
+We start by considering random variables $X_i$ which have a subgaussian decay.
+
+\begin{definition}[Subgaussian decay]
+  A random variable $X$ is said to be $\sigma$-subgaussian if there exists a constant $C > 0$, such that for all $t > 0$, the following inequality holds.
+  \begin{align*}
+    \P(|X| > t) \leq C \exp\left( -\frac{1}{2} \left( \frac{t}{\sigma} \right)^2 \right)
+  \end{align*}
+\end{definition}
+
+\begin{example}
+  The following random variables are examples of subgaussian random variables.
+  \begin{enumerate}[(i)]
+  \item Normal random variables
+  \item Bounded random variables
+  \end{enumerate}
+\end{example}
+
+\begin{lemma}
+  Let $X$ be a random variable. Then the following are equivalent:
+  \begin{enumerate}[(i)]
+  \item For all $t> 0$, $\P(|X| > t) \leq C \exp\left( -\frac{1}{2} \left( \frac{t}{\sigma} \right)^2 \right)$ (definition of subgaussian random variables).
+  \item There exists $a > 0$ such that $\E(\exp(aX^2)) < \infty$ ($\psi_2$ condition).
+  \item There exist $C^{\prime}$ and $b$ such that for all $\lambda \in \R$, $\E(\exp(\lambda X)) \leq C^{\prime} \exp(b \lambda^2)$ (Laplace transform condition).
+  \item There exists $K$ such that for all $p \geq 1$, $\E(X^p)^{\frac{1}{p}} \leq K \sqrt{p}$ (moment condition).
+  \end{enumerate}
+  Moreover, if $\E(X) = 0$, then the constant $C^{\prime}$ in the Laplace transform condition can be taken to be equal to $1$.
+\end{lemma}
+
+\begin{proof}
+  \begin{description}
+  \item[$(i) \implies (ii)$] Using Fubini's theorem and a change of variables, we can express $\E(aX^2)$ as an integral involving tail bounds.
+    \begin{align*}
+      \E(aX^2) &= 1 + \int_0^{\infty} 2 a t e^{at^2} \cdot \P\left( |X| > t \right) \dd t \\
+      &\leq 1 + \int_0^\infty 2Cat\exp\left( at^2 - \frac{1}{2}\left( \frac{t}{\sigma} \right)^2 \right)
+    \end{align*}
+    Clearly, picking a value of $a$ smaller than $\frac{1}{2\sigma^2}$ will make the integral converge.
+  \item[$(ii) \implies (iii)$] Since we want to estimate the expectation of $\exp(\lambda X)$, we multiply and divide by $\exp(aX^2)$ and complete the square.
+    \begin{align*}
+      \exp(\lambda X) = \exp\left(aX^2\right) \cdot \exp\left( \frac{\lambda^2}{4a} \right) \cdot \exp\left( - \left( \sqrt{a}X + \frac{\lambda}{2\sqrt{a}} \right)^2 \right)
+    \end{align*}
+    Note that the third term in the product is always less than $1$. We now take the expectation of the right hand side.
+    \begin{align*}
+      \E(\exp(\lambda X)) &= \E\left( \exp\left(aX^2\right) \cdot \exp\left( \frac{\lambda^2}{4a} \right) \cdot \exp\left( - \left( \sqrt{a}X + \frac{\lambda}{2\sqrt{a}} \right)^2 \right) \right) \\
+      &\leq \exp\left( \frac{\lambda^2}{4a} \right) \E\left( \exp(aX^2) \right)
+    \end{align*}
+    Setting $b= \frac{1}{4a}$ and $C^{\prime} = \E(\exp(aX^2))$, we get the result.
+  \item[$(iii) \implies (iv)$] We begin by getting a crude estimate for $\E(X^p)$ using the infinite series for $\exp(\lambda X)$.
+    \begin{align*}
+      \E(X^p) &\leq \frac{p!}{\lambda^p} \E(\exp(\lambda X)) \\
+              &= \frac{C^{\prime}p! \exp(b\lambda^2)}{\lambda^p}
+    \end{align*}
+    Note that this inequality works for all values of $\lambda$, but to get the best inequality, we minimize the right hand side by varying $\lambda$ over $\R$.
+    The minimum is attained when $\lambda = \frac{\sqrt{p}}{2b}$: plugging that into the right hand side, and taking $p$\textsuperscript{th} roots gives us the following.
+    \begin{align*}
+      \E(X^p)^{\frac{1}{p}} \leq C^{\prime \prime} \frac{(p!)^{\frac{1}{p}}}{\sqrt{p}}
+    \end{align*}
+    Here, we've absorbed all the constants into $C^{\prime \prime}$.
+    Using Stirling's approximation, the numerator is bounded above by $p$, giving us the inequality we want.
+  \item[$(iv) \implies (i)$] We rewrite the event $|X| > t$ in the following manner.
+    \begin{align*}
+      \P(|X| > t) &= \P(\exp(\lambda X^2) > \exp(\lambda t^2)) \\
+                  &\leq \exp(-\lambda t^2) \E(\exp(\lambda X^2))
+    \end{align*}
+    Here, $\lambda$ is a positive real number that we'll specify later, and the inequality comes from Markov's inequality.
+    Of course, we don't a priori know that $\E(\lambda X^2)$ is finite, but we will pick a $\lambda$ small enough such that it is.
+    Using Fubini's theorem, we can express $\E(\exp(\lambda X^2))$ in the following manner.
+    \begin{align*}
+      \E(\exp(\lambda X^2)) = 1 + \frac{\lambda \E(X^2)}{1!} + \frac{\lambda^2 \E(X^4)}{2!} + \cdots
+    \end{align*}
+    Using the bound on the moments of $X$ and Stirling's approximation, we get the following inequality.
+    \begin{align*}
+      \E(\exp(\lambda X^2)) &\leq \sum_{p=0}^{\infty} \frac{(2\lambda K^2p)^p}{p!} \\
+                            &\leq \sum_{p=0}^{\infty} \frac{(2\lambda e K^2 p)^p}{\sqrt{2\pi p} p ^p}
+    \end{align*}
+    If we pick $\lambda$ to be small enough that $2e \lambda K^2$ is much smaller than $1$, then the infinite sum converges, and the expectation is finite.
+    Setting $\frac{1}{2\sigma^2}$ to be equal to $\lambda$ gives us the result.
+  \end{description}
+  We now show that the constant in the Laplace transform condition can be set to be $1$ when $\E(X) = 0$.
+\end{proof}
 
 % \include{Notation}
 

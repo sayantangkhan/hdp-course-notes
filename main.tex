@@ -34,7 +34,7 @@ A classical result that arises from pure mathematics, but has several real life 
 
 \begin{proof}[Idea of proof]
   Pick a random subspace, and then show that with very high probability, the given inequality holds.
-  We'll prove the result in full detail later in the course.
+  We will prove the result in full detail later in the course.
 \end{proof}
 
 \begin{remark}
@@ -48,7 +48,7 @@ Consider a subset $S$ of $\ell_2^N$, given by inequalities involving the norms o
 Suppose that we are required to optimize a linear function $f$ on the set $S$.
 Since $S$ is given by inequalities involve the $\ell^2$-norm, it will be and intersection of interiors of ellipsoids, and consequently, optimizing $f$ will be computationally expensive.
 But we can get around the computational expense by embedding $\ell_2^N$ into $\ell_1^M$, where $M$ is $O(N)$, by Remark \ref{rem1}.
-Since this embedding doesn't distort distances too much, we can replace $S$ with a nearby polytope, given by inequalities involving the $\ell^1$ norm instead.
+Since this embedding does not distort distances too much, we can replace $S$ with a nearby polytope, given by inequalities involving the $\ell^1$ norm instead.
 Optimizing a linear function on a polytope is computationally much easier, thanks to linear programming.
 
 \paragraph{Empirical covariance estimation}
@@ -104,6 +104,9 @@ We start by considering random variables $X_i$ which have a subgaussian decay.
     \P(|X| > t) \leq C \exp\left( -\frac{1}{2} \left( \frac{t}{\sigma} \right)^2 \right)
   \end{align*}
 \end{definition}
+\begin{remark}
+  The constant $\sigma$ is often referred to as the variance proxy of the subgaussian random variable.
+\end{remark}
 
 \begin{example}
   The following random variables are examples of subgaussian random variables.
@@ -129,7 +132,7 @@ We start by considering random variables $X_i$ which have a subgaussian decay.
   \item[$(i) \implies (ii)$] Using Fubini's theorem and a change of variables, we can express $\E(aX^2)$ as an integral involving tail bounds.
     \begin{align*}
       \E(aX^2) &= 1 + \int_0^{\infty} 2 a t e^{at^2} \cdot \P\left( |X| > t \right) \dd t \\
-      &\leq 1 + \int_0^\infty 2Cat\exp\left( at^2 - \frac{1}{2}\left( \frac{t}{\sigma} \right)^2 \right)
+      &\leq 1 + \int_0^\infty 2Cat\exp\left( at^2 - \frac{1}{2}\left( \frac{t}{\sigma}  \right)^2 \right) \dd t
     \end{align*}
     Clearly, picking a value of $a$ smaller than $\frac{1}{2\sigma^2}$ will make the integral converge.
   \item[$(ii) \implies (iii)$] Since we want to estimate the expectation of $\exp(\lambda X)$, we multiply and divide by $\exp(aX^2)$ and complete the square.
@@ -152,15 +155,15 @@ We start by considering random variables $X_i$ which have a subgaussian decay.
     \begin{align*}
       \E(X^p)^{\frac{1}{p}} \leq C^{\prime \prime} \frac{(p!)^{\frac{1}{p}}}{\sqrt{p}}
     \end{align*}
-    Here, we've absorbed all the constants into $C^{\prime \prime}$.
+    Here, we have absorbed all the constants into $C^{\prime \prime}$.
     Using Stirling's approximation, the numerator is bounded above by $p$, giving us the inequality we want.
   \item[$(iv) \implies (i)$] We rewrite the event $|X| > t$ in the following manner.
     \begin{align*}
       \P(|X| > t) &= \P(\exp(\lambda X^2) > \exp(\lambda t^2)) \\
                   &\leq \exp(-\lambda t^2) \E(\exp(\lambda X^2))
     \end{align*}
-    Here, $\lambda$ is a positive real number that we'll specify later, and the inequality comes from Markov's inequality.
-    Of course, we don't a priori know that $\E(\lambda X^2)$ is finite, but we will pick a $\lambda$ small enough such that it is.
+    Here, $\lambda$ is a positive real number that we will specify later, and the inequality comes from Markov's inequality.
+    Of course, we do not a priori know that $\E(\lambda X^2)$ is finite, but we will pick a $\lambda$ small enough such that it is.
     Using Fubini's theorem, we can express $\E(\exp(\lambda X^2))$ in the following manner.
     \begin{align*}
       \E(\exp(\lambda X^2)) = 1 + \frac{\lambda \E(X^2)}{1!} + \frac{\lambda^2 \E(X^4)}{2!} + \cdots
@@ -174,6 +177,73 @@ We start by considering random variables $X_i$ which have a subgaussian decay.
     Setting $\frac{1}{2\sigma^2}$ to be equal to $\lambda$ gives us the result.
   \end{description}
   We now show that the constant in the Laplace transform condition can be set to be $1$ when $\E(X) = 0$.
+  To do so, we recall the $\psi_2$ and the Laplace transform condition, i.e. there exist constants $a$, $C^{\prime}$ and $b$ such that the following two inequalities hold for all $\lambda \in \R$.
+  \begin{align}
+    \label{eq:1}
+    \E(\exp(aX^2)) &< \infty \\
+    \E(\exp(\lambda X)) & \leq C \exp(b\lambda^2)
+  \end{align}
+  Suppose now that $\lambda^2 > 2a$.
+  By the Laplace transform condition, we have the following inequality.
+  \begin{align*}
+    \E(\exp(2aX)) &\leq C^{\prime} \exp(4ba^2) \\
+                  &= \exp(4a^2 b^{\prime})
+  \end{align*}
+  Where $b^{\prime}$ is $b + \frac{\log(C^{\prime})}{4a^2}$.
+  Since $b^{\prime}$ decreases as $a$ increases, for any $\lambda^2 > 2a$, $\E(\exp(aX^2))$ will be less than $\exp(b^{\prime} \lambda^2)$.
+
+  Now suppose that $\lambda^2 < 2a$.
+  We begin by considering the special case where $X$ is a symmetric random variable.
+  By symmetry of $X$, we have the following inequality.
+  \begin{align*}
+    \exp(\lambda X) &= \frac{\exp(\lambda X) + \exp(-\lambda X)}{2} \\
+            &\leq \exp\left( \frac{\lambda^2 X^2}{2} \right)
+  \end{align*}
+  Taking expectations on both sides gives us the following.
+  \begin{align*}
+    \E(\exp(\lambda X)) \leq \E\left(\exp\left( \frac{\lambda^2}{2} X^2 \right)\right)
+  \end{align*}
+  Since $\lambda^2 < 2a$, $\frac{2a}{\lambda^2}$ is greater than $1$, and we can use Hölder's inequality to bound the right hand term.
+  \begin{align*}
+    \E\left(\exp\left( \frac{\lambda^2}{2} X^2 \right)\right) \leq
+    \left( \E\left(\exp\left(   aX^2   \right) \right) \right)^{\frac{\lambda^2}{2a}}
+  \end{align*}
+  Since $\E(\exp(aX^2))$ is a finite constant, the right hand side is $\exp(b^{\prime \prime} \lambda^2)$ for some constant $b^{\prime \prime}$.
+
+  Now suppose $X$ is not symmetric.
+  Let $X^{\prime}$ be an identical independent copy of $X$.
+  Since $\E(X^{\prime})$ is $0$, we have the following equality.
+  \begin{align*}
+    \E(\exp(\lambda X)) = \E(\exp(\lambda (X - \E(X^{\prime}))))
+  \end{align*}
+  Since $\exp$ is a convex function, we can pull out the inner expectation, using Jensen's inequality.
+  \begin{align*}
+    \E(\exp(\lambda X)) \leq \exp(\lambda(X - X^{\prime}))
+  \end{align*}
+  Since $X - X^{\prime}$ is symmetric, the result follows from the previous part, and the proof is complete.
+\end{proof}
+We now explain why care so much about the constant in the Laplace transform condition.
+
+\begin{theorem}[Hoeffding-Chernoff-Azuma inequality]
+  Let $\{X_1, \ldots, X_n\}$ be i.i.d. subgaussian random variables with mean $0$.
+  Then for any $(a_1, \ldots , a_n) \in \R^n$ and any $t > 0$, the following probability bound holds.
+  \begin{align*}
+    \P\left( \left| \sum_{i=1}^n a_i X_i \right| > t \right) \leq C \exp\left( -c \frac{t^2}{\norm{\mathbf{a}}_2} \right)
+  \end{align*}
+  Where $C$ and $c$ are some absolute constants.
+\end{theorem}
+\begin{proof}
+  Without loss of generality, we can assume $\norm{\mathbf{a}}_2 = 1$.
+  It will suffice to show that the sum of subgaussian random variables is subgaussian.
+  We will show it verifying the Laplace transform condition.
+  Let $\lambda \in \R$, and let $Y = \sum_{i=1}^n a_iX_i$.
+  We compute $\E(\exp(\lambda Y))$.
+  \begin{align*}
+    \E(\exp(\lambda Y)) &= \prod_{i=1}^n \E(\exp(\lambda a_i X_i)) \\
+                        &\leq \prod_{i=1}^n \E(\exp(b \lambda^2 a_i^2)) \\
+                        &= \E(\exp(b\lambda^2))
+  \end{align*}
+  This proves the result. Note that having the Laplace transform coefficient equal to $1$ helped, because if the coefficient $C$ was greater than $1$, then we would pick up a constant of $C^n$, which would be very large for large values of $n$.
 \end{proof}
 
 % \include{Notation}

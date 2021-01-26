@@ -44,10 +44,10 @@ A classical result that arises from pure mathematics, but has several real life 
 
 \paragraph{A computer science application of Dvoretzky's theorem}
 
-Consider a subset $S$ of $\ell_2^N$, given by inequalities involving the norms of elements in $\ell_2^N$.
+Consider a subset $S$ of $\left(\ell^2\right)^N$, given by inequalities involving the norms of elements in $\left( \ell^2 \right)N$.
 Suppose that we are required to optimize a linear function $f$ on the set $S$.
 Since $S$ is given by inequalities involve the $\ell^2$-norm, it will be and intersection of interiors of ellipsoids, and consequently, optimizing $f$ will be computationally expensive.
-But we can get around the computational expense by embedding $\ell_2^N$ into $\ell_1^M$, where $M$ is $O(N)$, by Remark \ref{rem1}.
+But we can get around the computational expense by embedding $\left(\ell^2\right)^N$ into $\ell_1^M$, where $M$ is $O(N)$, by Remark \ref{rem1}.
 Since this embedding does not distort distances too much, we can replace $S$ with a nearby polytope, given by inequalities involving the $\ell^1$ norm instead.
 Optimizing a linear function on a polytope is computationally much easier, thanks to linear programming.
 
@@ -77,7 +77,7 @@ This leads to the following two questions.
 \item How to bound $\E \max V_u$.
 \item How to bound $\P(\left| \max V_u - \E \max V_u \right| \geq t)$.
 \end{enumerate}
-It turns out one can often answer (ii) without answering (i)m which may seem surprising given that the most elementary concentration inequalities involve the expectation (i.e. Markov's inequality).
+It turns out one can often answer (ii) without answering (i), which may seem surprising given that the most elementary concentration inequalities involve moment bounds (i.e. Markov's inequality).
 The starting point in answering (ii) is understanding \emph{concentration of measure}.
 
 \section{Concentration of measure}
@@ -246,8 +246,108 @@ We now explain why care so much about the constant in the Laplace transform cond
   This proves the result. Note that having the Laplace transform coefficient equal to $1$ helped, because if the coefficient $C$ was greater than $1$, then we would pick up a constant of $C^n$, which would be very large for large values of $n$.
 \end{proof}
 
+To see how this inequality is used in practice, consider the simplest possible example of a subgaussian random variable, a random variable that takes values $1$ and $-1$ with probability $\frac{1}{2}$.
+% A Rademacher random variable is a random variable that takes values $1$ and $-1$ with probability $\frac{1}{2}$.
+
+Let's recall some elementary facts about Fourier analysis before stating the example.
+Let $L^2([0,1])$ be the space of complex $L^2$ functions on $[0,1]$ and let $\{e_n\}_{n \in \Z}$ be the standard Fourier basis, i.e. $e_n(t) = \exp(2\pi i nt)$.
+Since $\{e_n\}$ forms an orthonormal basis, any function $f \in L^2([0,1])$ can be decomposed into its Fourier series.
+\begin{align*}
+  f = \sum_{n \in \Z} \widehat{f}(n) e_n
+\end{align*}
+The Fourier coefficient $\widehat{f}(n)$ is given by $\int_0^1 f(t) \overline{e_n(t)} \dd t$.
+The map sending $f$ to its Fourier coefficients is a linear isometry from $L^2([0,1])$ to $\ell^2(\Z)$.
+For most sequences $\{\widehat{f}(n)\}$ in $\ell^2(\Z)$, the associated function $f$ will not be continuous, but we will show that under reasonably mild conditions on $\{\widehat{f}(n)\}$, $f$ can be made to be continuous.
+
+Let $\varepsilon_n \in \{-1, 1\}$ for $n \in \Z$, and let $\varepsilon = \{\varepsilon_n\}_{n \in \Z}$.
+For any $f \in L^2([0,1])$ and any such $\\varepsilon$, define $f_{\varepsilon}$ to be the following function.
+\begin{align*}
+  f_{\varepsilon} = \sum_{n \in Z} \varepsilon_n \widehat{f}(n) e_n
+\end{align*}
+We then have the following theorem.
+\begin{theorem}
+  \label{thm:continuous-l2-function}
+  Let $f$ be a function in $L^2([0,1])$ whose Fourier coefficients satisfy the following inequality.
+  \begin{align}
+    \label{eq:convergence-condition-example}
+    \sum_{n \in \Z} \left( \log(|n| + 1) \right)^3 \left| \widehat{f}(n) \right|^2 < \infty
+  \end{align}
+  Let $\{\varepsilon_n\}$ be a sequence of i.i.d random variables taking values in $1$ and $-1$ with probability $\frac{1}{2}$.
+  Then $f_{\varepsilon}$ is a continuous function with probability $1$.
+\end{theorem}
+
+To prove the theorem, we will need several lemmas.
+
+\begin{lemma}
+  \label{lem:main-technical-lemma}
+  Let $N \in \N$.
+  Then for any $\{a_n\}_{n=-N}^N$, the following probability bound holds.
+  \begin{align*}
+    \P\left( \norm{ \sum_{n=-N}^N \varepsilon_n a_n e_n }_{\infty} >  C \sqrt{\log(N)} \left( \sum_{n=-N}^N |a_n|^2 \right)^{\frac{1}{2}} \right) \leq \frac{1}{N^2}
+  \end{align*}
+  Here the constant $C$ is absolute, i.e. independent of $N$.
+\end{lemma}
+\begin{proof}
+  The first step is to consider the maximum, not over all of $[0,1]$, but over the points $\left\{ \frac{j}{N^2} \right\}_{j = 0}^N$.
+  It will suffice to bound the probability for any given point by $\frac{1}{N^4}$, and then use the union bound to get the desired inequality.
+  Since $\varepsilon_n$ is a subgaussian random variable with mean $0$, by Hoeffding-Chernoff-Azuma inequality, we get the following bound for any $t \in [0,1]$.
+  \begin{align*}
+    \P\left( \norm{ \sum_{n=-N}^N \varepsilon_n a_n e_n }_{\infty} >  C \sqrt{\log(n)} \left( \sum_{n=-N}^N |a_n|^2 \right)^{\frac{1}{2}} \right) \leq C^{\prime} \exp(-cC^2 \log(n))
+  \end{align*}
+  We can pick a $C$ large enough so that the right hand side is bounded above by $\frac{1}{N^4}$, and that concludes the first step after we use the union bound.
+
+  The next step is to extend the argument to all of $[0,1]$.
+  The key trick here will be to estimate the maximum value of trigonometric polynomials away from points of the form $\frac{j}{N^2}$ using the maximum we derived in step $1$.
+  Bernstein's inequality for trigonometric polynomial helps in this regard: given a trigonometric polynomial $p$ of degree $n$, the following inequality relates the $\norm{\cdot}_{\infty}$-norm of $p^{\prime}$ and $p$.
+  \begin{align*}
+    \norm{p^{\prime}}_{\infty} \leq n \norm{p}_{\infty}
+  \end{align*}
+  Let $V$ be the maximum value of the trigonometric polynomial $p = \sum_{n=-N}^N \varepsilon_n a_n e_n$ achieves on points of the form $\frac{j}{N^2}$, and let $W$ be the maximum value over all of $[0,1]$, and say it is achieved at some point $t$, and let $s$ be the closest point of the form $\frac{j}{N^2}$.
+  Then, by the mean value theorem, we get the following relation between $V$ and $W$.
+  \begin{align*}
+    W &\leq V + \norm{p^{\prime}}_{\infty} |t-s| \\
+      &\leq V + \frac{N \norm{p}_{\infty}}{N^2} \\
+      &= V + \frac{W}{N}
+  \end{align*}
+  This means for $N > 1$, $W \leq 2V$, and this proves the lemma.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:continuous-l2-function}]
+  For $M \in \N$, define the function $f_{M, \varepsilon}$ in the following manner.
+  \begin{align*}
+    f_{M, \varepsilon} = \sum_{2^M \leq |n| < 2^{M+1}} \varepsilon_n \widehat{f}(n) e_n
+  \end{align*}
+  We now use Lemma \ref{lem:main-technical-lemma} with $N = 2^{M+1}$, $a_n = 0$ for $|n| < 2^M$, and $a_n = \widehat{f}(n)$ for $2^M \leq n < 2^{M+1}$.
+  \begin{align*}
+    \P\left( \norm{f_{M,\varepsilon}}_{\infty} > C \sqrt{M} \norm{f_{M,\varepsilon}}_2 \right) < \frac{1}{2^{2(M+1)}}
+  \end{align*}
+  \confused{It seems something is going wrong here because the sum of probability upper bound converges too easily, which means one might be making a mistake, or strengthen the result significantly.}
+  By the Borel-Cantelli lemma, for almost every $\varepsilon$, $\norm{f_{M, \varepsilon}}_{\infty}$ eventually becomes smaller than $C\sqrt{M} \norm{f_{M,\varepsilon}}_2$.
+
+  Pick $\varepsilon$ to be one of the instances where the above described situation does happen.
+  We have that $f$ is an infinite sum of continuous functions.
+  \begin{align*}
+    f = \varepsilon_0 \widehat{f}(0) e_0 + \sum_{M=0}^{\infty} f_{M, \varepsilon}
+  \end{align*}
+  This will converge to a continuous function if the sequence of partial sums is uniformly Cauchy.
+  To see that is indeed the case, pick $K_1$ and $K_2$ larger than the threshold $M$ after which $\norm{f_{M, \varepsilon}} < C\sqrt{M}$.
+  \begin{align*}
+    \norm{f_{K_2, \varepsilon} - f_{K_1, \varepsilon}}_{\infty} &\leq \sum_{M=K_1}^{K_2} \norm{f_{M, \varepsilon}}_{\infty} \\
+                                                                &\leq \sum_{M=K_1}^\infty C \sqrt{M} \norm{f_{M, \varepsilon}}_2 \\
+                                                                &\leq C \left( \sum_{M=K_1}^{\infty} \left( \frac{1}{M} \right)^2 \right)^{\frac{1}{2}} \left( \sum_{M=K_1}^{\infty} M^3 \norm{f_{M, \varepsilon}}_2^2 \right)^{\frac{1}{2}} \\
+                                                                &\leq \frac{C^{\prime}}{K_1} \left( \sum_{n \in \Z} (C^{\prime \prime} \log(|n| + 1))^3 \widehat{f}(n)^2 \right) \\
+    &\leq \frac{C^{\prime\prime\prime}}{K_1}
+  \end{align*}
+  The upper bound goes to $0$ as $K_1$ goes to $\infty$, which shows the sequence is uniformly Cauchy, and thus the limit is a continuous function.
+\end{proof}
+
+% \begin{remark}
+%   The convergence requirement in \eqref{eq:convergence-condition-example} can be relaxed significantly.
+%   We chose to prove the theorem with exponent equal to $5$ to make the proof simpler.
+% \end{remark}
+
 % \include{Notation}
 
-\bibliography{Moduli}
+% \bibliography{Moduli}
 
 \end{document}

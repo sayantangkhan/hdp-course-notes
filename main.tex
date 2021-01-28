@@ -225,6 +225,7 @@ We start by considering random variables $X_i$ which have a subgaussian decay.
 We now explain why care so much about the constant in the Laplace transform condition.
 
 \begin{theorem}[Hoeffding-Chernoff-Azuma inequality]
+  \label{thm:hoeffding}
   Let $\{X_1, \ldots, X_n\}$ be i.i.d. subgaussian random variables with mean $0$.
   Then for any $(a_1, \ldots , a_n) \in \R^n$ and any $t > 0$, the following probability bound holds.
   \begin{align*}
@@ -339,6 +340,123 @@ To prove the theorem, we will need several lemmas.
     &\leq \frac{C^{\prime\prime\prime}}{K_1}
   \end{align*}
   The upper bound goes to $0$ as $K_1$ goes to $\infty$, which shows the sequence is uniformly Cauchy, and thus the limit is a continuous function.
+\end{proof}
+
+We now prove a moment bound for sums of subgaussian random variables.
+\begin{theorem}[Khinchin's inequality]
+  Let $\{X_1, \ldots, X_n\}$ be i.i.d subgaussian random variables with $\E(X_i) = 0$ and $\E(X_i^2) = 1$.
+  Then for any $p \in [1, \infty)$, there exist constants $A_p$ and $B_p$ greater than $0$ such that for any vector $\mathbf{a} \in \R^n$, the following moment bound holds.
+  \begin{align*}
+    A_p \norm{\mathbf{a}}_2 \leq \left( \E \left| \sum_{i=1}^n a_i X_i \right|^p \right)^{\frac{1}{p}} \leq  B_p \norm{\mathbf{a}}_2
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  Consider first the case where $p > 2$.
+  Then, using Hölder's inequality for the convex function $x \mapsto x^{\frac{p}{2}}$, we get the following.
+  \begin{align*}
+\left( \E \left| \sum_{i=1}^n a_i X_i \right|^2 \right)^{\frac{1}{2}} \leq \left( \E \left| \sum_{i=1}^n a_i X_i \right|^p \right)^{\frac{1}{p}}
+  \end{align*}
+  This shows that for $p > 2$, we can set $A_p = 1$.
+  To get $B_p$, we use the moment condition on subgaussian random variables.
+  Since the sum of subgaussian random variables is subgaussian, we have that $Y = \sum_{i=1}^n a_i X_i$ is subgaussian, and thus satisfies the moment bound.
+  We have seen that the absolute constant $K$ will only depend on $\norm{\mathbf{a}}_2$, giving us the upper bound.
+  \begin{align*}
+    \E(|Y|^p)^{\frac{1}{p}} \leq K \sqrt{p} \norm{\mathbf{a}}_2
+  \end{align*}
+  Setting $B_p = K\sqrt{p}$ proves the result in this case.
+
+  For $p < 2$, it will suffice to prove it for $p = 1$, since the $p$\textsuperscript{th} moment of $|Y|$ is an increasing function of $Y$ and bounded above by $\norm{\mathbf{a}}_2$ by Hölder's inequality, which means we can set $B_p = 1$ (or the previous argument will also work, but $B_p = 1$ is better than $B_p = K\sqrt{p}$).
+  Thus we just need to show the lower bound for $p = 1$.
+  In this case, the inequality follows from Cauchy-Schwartz.
+  \begin{align*}
+    \E(|Y|^2) &\leq \sqrt{\E(|Y|) \E(|Y|^3)}
+  \end{align*}
+  Using Khinchin's inequality for $p=3$, we deal with $\E(|Y|^3) \leq B_3 \norm{\mathbf{a}}_2$.
+  Squaring both sides, we see that $A_1 = B_3^{-3}$ works, and the proof is complete.
+\end{proof}
+There is a far reaching generalization of Khinchin's inequality, due to Kahane.
+\begin{theorem}[Kahane inequality]
+  Let $X$ be a normed vector space, and let $\{\varepsilon_1, \ldots, \varepsilon_n\}$ be i.i.d. Rademacher random variables.
+  For any $p \in [1, \infty)$, there exists $A_p$ and $B_p$ greater than $0$ such that for any $\{a_1, \ldots, a_n\}$ in $X$, the following holds.
+  \begin{align*}
+    A_p \left( \E \norm{\sum_{j=1}^n \varepsilon_j a_j}^2_X \right)^{\frac{1}{2}} \leq \left( \E \norm{\sum_{j=1}^n \varepsilon_j a_j}^p_X \right)^{\frac{1}{p}} \leq B_p \left( \E \norm{\sum_{j=1}^n \varepsilon_j a_j}^2_X \right)^{\frac{1}{2}}
+  \end{align*}
+\end{theorem}
+The proof of this inequality requires more machinery than the previous result, so we'll defer the proof until we have developed the required tools.
+
+Recall that we got strong tail decay for bounded random variables using Hoeffding-Chernoff-Azuma inequality, since they're subgaussian, but it turns out, we can do much better than that using boundedness.
+
+\begin{theorem}[Bennett's inequality]
+  \label{thm:bennett}
+  Let $\{X_1, \ldots, X_n\}$ be i.i.d random variables satisfying the following properties.
+  \begin{enumerate}[(i)]
+  \item $\norm{X_j}_{\infty} \leq 1$.
+  \item $\E(X_j) = 0$ and $\E(X_j^2) = \delta$.
+  \end{enumerate}
+  Then for any $\mathbf{a} \in \R^n$, we have the following tail decay estimate.
+  \begin{align*}
+    \P\left( \left| \sum_{j=1}^n a_j X_j \right| > t \right) \leq
+    \begin{cases}
+      2 \exp \left(- \frac{t^2}{2e\delta \norm{\mathbf{a}}_2^2} \right)\text{ for $t \leq t_{\ast}$} \\
+      2 \exp \left( - \frac{t}{4 \norm{\mathbf{a}}_{\infty}} \cdot \log\left( \frac{t \norm{\mathbf{a}}_{\infty}}{\delta \norm{\mathbf{a}}_2^2} \right) \right)\text{ for $t > t_{\ast}$}
+    \end{cases}
+  \end{align*}
+  Here $t_{\ast} = e\delta \norm{\mathbf{a}}_2^2$.
+\end{theorem}
+Before we start to prove the theorem, let's show why the described tail bound is a very natural upper bound to consider.
+Consider $\mathbf{a} = (1, 1, \ldots, 1)$.
+Then $\sum a_j X_j$ is approximately $\cN(0, \delta \norm{\mathbf{a}}^2_2) = \cN(0, \delta n)$.
+The tail should then behave something like $\exp \left( - \frac{t^2}{2\delta n} \right)$, which is precisely the first case in the upper bound.
+If $\delta$ is small, i.e. $\delta n$ is bounded above by some constant $\lambda$, then the central limit theorem asymptotic does not apply, but rather the Poisson limit theorem asymptotic applies.
+\begin{align*}
+  \P\left( \sum_{j=1}^n a_j X_j > t \right) &\sim \sum_{j=t}^{\infty} e^{-\lambda} \frac{\lambda^j}{j!} \\
+                                            &\sim e^{-\lambda} \frac{\lambda^j}{j!} \\
+                                            &\sim \exp\left( -t \log\left( \frac{t}{e\lambda} \right) \right)
+\end{align*}
+Contrast this with the second case of the tail in Bennett's inequality.
+
+\begin{proof}[Proof of Theorem \ref{thm:bennett}]
+  Without loss of generality, assume that $\norm{\mathbf{a}}_{\infty} = 1$.
+  Set $Y = \sum_{j=1}^n a_j X_j$, and let $\lambda > 0$.
+  We then estimate the Laplace transform of $Y$.
+  \begin{align*}
+    \E\left( \exp(\lambda Y) \right) &= \prod_{j=1}^n \E\left(\exp\left(\lambda a_j X_j \right) \right)
+  \end{align*}
+  We use an elementary inequality to estimate the Laplace transform.
+  \begin{align*}
+    e^x \leq 1 + x + \frac{x^2}{2} e^{|x|}
+  \end{align*}
+  Thus, we have the following.
+  \begin{align*}
+    \E\left( \exp\left( \lambda a_j X_j \right) \right) &\leq \E\left(1 + \lambda a_j X_j + \frac{\lambda^2 a_j^2 X_j^2}{2} \exp\left( \left| \lambda a_j X_j \right| \right)\right) \\
+    &\leq 1 + 0 + \frac{\lambda^2 a_j^2 \delta}{2} e^{\lambda}
+  \end{align*}
+  Putting all of it back together, we have the following inequality.
+  \begin{align*}
+    \E\left( \exp\left( \lambda Y \right) \right) &\leq \prod_{j=1}^n \left( 1 + \frac{\lambda^2 a_j^2 \delta e^{\lambda}}{2} \right) \\
+                                                  &\leq \prod_{j=1}^n \exp\left( \frac{\lambda^2 a_j^2 \delta e^{\lambda}}{2} \right) \\
+                                                  &= \exp\left( \frac{\delta\lambda^2 e^{\lambda}}{2} \norm{\mathbf{a}}_2^2 \right)
+  \end{align*}
+  Now that we have the Laplace transform estimate, we can use it to estimate tail probabilities.
+  \begin{align*}
+    \P(Y > t) &= \P(\exp(\lambda Y) > e^{\lambda t}) \\
+              &\leq \frac{\exp\left( \frac{\delta\lambda^2 e^{\lambda}}{2} \norm{\mathbf{a}}_2^2 \right)}{e^{\lambda t}} \\
+              &= \exp\left( -\lambda t + \frac{\delta\lambda^2 e^{\lambda}}{2} \norm{\mathbf{a}}_2^2 \right)
+  \end{align*}
+
+  The next step is to optimize this inequality as we vary $\lambda$.
+  We begin by optimizing in the region $\lambda \leq 1$.
+  In this case, the optimum $\lambda$ is $\frac{t}{e\delta \norm{\mathbf{a}_2^2}}$.
+  Plugging in this value of $\lambda$ gives the first case of the upper bound, and this is valid for $t \leq e\delta \norm{\mathbf{a}}_2^2 = t_{\ast}$.
+
+  In the region $\lambda > 1$, we use the inequality $\lambda \leq e^{\lambda}$.
+  \begin{align*}
+    \P(Y > t) &\leq \exp\left( -\lambda t + \frac{\delta\lambda^2 e^{\lambda}}{2} \norm{\mathbf{a}}_2^2 \right) \\
+              &\leq \exp\left( -\lambda t + \frac{\delta\lambda e^{2\lambda}}{2} \norm{\mathbf{a}}_2^2 \right)
+  \end{align*}
+  Choose $\lambda$ such that $\lambda \norm{\mathbf{a}}_2^2 e^{2\lambda} = t$. Plugging that value in, we get the second case.
+
+  Finally, doing this for $-t$ gives similar bounds, and we combine the two using union bound to get the claimed result. This completes the proof.
 \end{proof}
 
 % \begin{remark}

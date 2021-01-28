@@ -269,10 +269,10 @@ We then have the following theorem.
 \begin{theorem}
   \label{thm:continuous-l2-function}
   Let $f$ be a function in $L^2([0,1])$ whose Fourier coefficients satisfy the following inequality.
-  \begin{align}
-    \label{eq:convergence-condition-example}
+  \begin{align*}
+    % \label{eq:convergence-condition-example}
     \sum_{n \in \Z} \left( \log(|n| + 1) \right)^3 \left| \widehat{f}(n) \right|^2 < \infty
-  \end{align}
+  \end{align*}
   Let $\{\varepsilon_n\}$ be a sequence of i.i.d random variables taking values in $1$ and $-1$ with probability $\frac{1}{2}$.
   Then $f_{\varepsilon}$ is a continuous function with probability $1$.
 \end{theorem}
@@ -296,6 +296,7 @@ To prove the theorem, we will need several lemmas.
     \P\left( \norm{ \sum_{n=-N}^N \varepsilon_n a_n e_n }_{\infty} >  C \sqrt{\log(n)} \left( \sum_{n=-N}^N |a_n|^2 \right)^{\frac{1}{2}} \right) \leq C^{\prime} \exp(-cC^2 \log(n))
   \end{align*}
   We can pick a $C$ large enough so that the right hand side is bounded above by $\frac{1}{N^4}$, and that concludes the first step after we use the union bound.
+  Note that in order to do this, we really needed something stronger than Chebyshev's inequality, since we needed an upper bound that can be made smaller than $\frac{1}{N^4}$.
 
   The next step is to extend the argument to all of $[0,1]$.
   The key trick here will be to estimate the maximum value of trigonometric polynomials away from points of the form $\frac{j}{N^2}$ using the maximum we derived in step $1$.
@@ -322,7 +323,7 @@ To prove the theorem, we will need several lemmas.
   \begin{align*}
     \P\left( \norm{f_{M,\varepsilon}}_{\infty} > C \sqrt{M} \norm{f_{M,\varepsilon}}_2 \right) < \frac{1}{2^{2(M+1)}}
   \end{align*}
-  \confused{It seems something is going wrong here because the sum of probability upper bound converges too easily, which means one might be making a mistake, or strengthen the result significantly.}
+  % \confused{It seems something is going wrong here because the sum of probability upper bound converges too easily, which means one might be making a mistake, or strengthen the result significantly.}
   By the Borel-Cantelli lemma, for almost every $\varepsilon$, $\norm{f_{M, \varepsilon}}_{\infty}$ eventually becomes smaller than $C\sqrt{M} \norm{f_{M,\varepsilon}}_2$.
 
   Pick $\varepsilon$ to be one of the instances where the above described situation does happen.

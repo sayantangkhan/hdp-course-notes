@@ -95,8 +95,12 @@ We begin with the simplest version of measure concentration.
 \paragraph{Concentration for linear functions}
 
 Let the metric space $X$ in this setting be $\R^n$ for some fixed $n$, and let $\{X_1, \ldots, X_n \}$ be i.i.d scalar random variables.
-Let $f: \R^n \to \R$ be a linear function, given by taking inner product with some vector $\mathbf{a}$. We define $Y$ to be $\sum_{i=1}^n a_i X_i$.
-We start by considering random variables $X_i$ which have a subgaussian decay.
+Let $f: \R^n \to \R$ be a linear function, given by taking inner product with some vector $\mathbf{a}$.
+We define $Y$ to be $\sum_{i=1}^n a_i X_i$.
+We will prove concentration inequalities for $Y$ by imposing conditions on $X_i$: one such condition is requiring $X_i$ to be \emph{subgaussian}.
+
+\subsection{Subgaussian random variables}
+\label{sec:subg-rand-vari}
 
 \begin{definition}[Subgaussian decay]
   A random variable $X$ is said to be $\sigma$-subgaussian if there exists a constant $C > 0$, such that for all $t > 0$, the following inequality holds.
@@ -460,13 +464,134 @@ Contrast this with the second case of the tail in Bennett's inequality.
   Finally, doing this for $-t$ gives similar bounds, and we combine the two using union bound to get the claimed result. This completes the proof.
 \end{proof}
 
-% \begin{remark}
-%   The convergence requirement in \eqref{eq:convergence-condition-example} can be relaxed significantly.
-%   We chose to prove the theorem with exponent equal to $5$ to make the proof simpler.
-% \end{remark}
+The theorems in this section illustrate how strong the condition of being subgaussian is, especially when taking sums of i.i.d copies of subgaussians.
+In the next section, we will investigate another similar tail decay condition.
 
-% \include{Notation}
+\subsection{Subexponential random variables}
+\label{sec:subexp-rand-vari}
 
-% \bibliography{Moduli}
+\begin{definition}[Subexponential random variable]
+  A random variable $X$ is said to be $k$-subexponential if for all $t > 0$, the following holds.
+  \begin{align*}
+    \P\left( |X| > t \right) \leq 2 \exp\left(- \frac{t}{k} \right)
+  \end{align*}
+\end{definition}
+
+Just like in the case of subgaussian random variables, we have a number of equivalent definitions of subexponential random variables.
+
+\begin{lemma}
+  Let $X$ be a random variable. Then the following conditions are equivalent.
+  \begin{enumerate}[(i)]
+  \item $X$ is $k$-subexponential.
+  \item There exists a $b > 0$ such that $\E\left( \exp(b|X|) \right) \leq 2$ ($\psi_1$ condition).
+  \item For all $p \geq 1$, $\E\left( |X|^p \right)^{\frac{1}{p}} \leq Cp$ (moment condition).
+  \end{enumerate}
+  Moreover, if $\E(X) = 0$, there exists $\lambda_0 > 0 $ such that for all $|\lambda| < \lambda_0$, $\E \left( \exp(\lambda X) \right) \leq \exp\left( \widetilde{C}\lambda^2 \right)$.
+\end{lemma}
+
+\begin{proof}
+  % \begin{description}
+  % \item[$(i) \implies (ii)$] Using the integrated tail probability expectation formula, we can express $\E\left( \exp(b|X|) \right)$ as the following integral.
+  %   \begin{align*}
+  %     \E\left( b|X| \right) &= 1 + \int_0^\infty b\exp(bt) \cdot \P\left( |X| > t \right) \dd t \\
+  %                           &\leq 1 + \int_0^{\infty} b \exp\left( bt - \frac{t}{k} \right) \dd t
+  %   \end{align*}
+  %   Clearly, picking a small enough $b$ makes the right hand side converge to a number smaller than $2$.
+  % \item[$(i) \implies (ii)$]
+  % \end{description}
+  The proofs of the three equivalences are similar in spirit to the versions for subgaussians, so we will skip the proof, and just prove the moreover part.
+
+  Writing $\E(\exp(\lambda X))$ as an infinite sum of expectations, we get the following chain of inequalities for a small enough value of $\lambda$.
+  \begin{align*}
+    \E(\exp\left( \lambda X \right)) &= 1 + \E(\lambda X) + \sum_{j=2}^{\infty} \frac{\lambda^j \E(X^j)}{j!} \\
+                                     &\leq 1 + 0 + \sum_{j=2}^{\infty} \frac{\left( \lambda C j \right)^j}{j!} \\
+                                     &\leq 1 + \sum_{j=2}^{\infty} (\lambda C e)^j \\
+                                     &= 1 + \frac{(\lambda C e)^2}{1 - \lambda C e}
+  \end{align*}
+  We get the first inequality from the moment condition, the second from Stirling's approximation, and the third follows from geometric convergence for $\lambda C e < 1$.
+  Note now that if $\lambda C e < \frac{1}{2}$, we get the following inequalities.
+  \begin{align*}
+    1 + \frac{(\lambda C e)^2}{1 - \lambda C e} &\leq 1 + 2C^2e^2\lambda^2 \\
+    &\leq \exp\left( 2C^2e^2 \lambda^2 \right)
+  \end{align*}
+  This proves the result.
+\end{proof}
+
+We can now prove a strong tail bound for sums of subexponential random variables like we did in Hoeffding-Chernoff-Azuma inequality.
+
+\begin{theorem}[Bernstein's inequality]
+  \label{thm:bernstein}
+  Let $\{X_1, \ldots, X_n\}$ be i.i.d subexponential random variables with mean $0$, and let $\mathbf{a}$ be a vector in $\R^n$. Then the following holds.
+  \begin{align*}
+    \P\left( \left| \sum_{j=1}^n a_j X_j \right| > t \right) \leq
+    2 \exp\left( -c \left( \frac{t^2}{\norm{\mathbf{a}}_2^2} \wedge  \frac{t}{\norm{\mathbf{a}}_\infty}\right) \right)
+  \end{align*}
+  Here $a \wedge b$ denotes the minimum of $a$ and $b$.
+\end{theorem}
+\begin{remark}
+  The tail of a sum of i.i.d random variables behaves very much like the situation described above.
+  When $t$ is small, the tail behave like a subgaussian, and when $t$ is large, the tail behaves like a subexponential random variable.
+\end{remark}
+
+\begin{proof}[Sketch of proof of Theorem \ref{thm:bernstein}]
+  Like with all the other sum tail bounds, the proof of this theorem is via bounding the Laplace transform of the random variable.
+  For small $\lambda$, we have the upper bound to be $\exp(\widetilde{C}\lambda^2)$ and then we optimize over $\lambda$, and for large $t$, we use Markov's inequality.
+\end{proof}
+
+\subsection{Applications of subgaussian and subexpontial random variables}
+\label{sec:appl-subg-subexp}
+
+Before we list some of the applications, we make a remark on why the conditions for subexpontial and subgaussian random variables were called $\psi_1$ and $\psi_2$ conditions respectively.
+Let $\alpha$ be a number greater than $0$.
+Define a function $\psi_{\alpha}$ in the following manner.
+\begin{align*}
+  \psi_{\alpha}(x) \coloneqq \exp(x^\alpha) - 1
+\end{align*}
+Using this function, we can define norms on random variables.
+\begin{align*}
+  \norm{X}_{\psi_{\alpha}} \coloneqq \inf \left( K > 0 \mid \E\left( \psi_{\alpha} \left( \frac{|X|}{K} \right) \right) \leq 1 \right)
+\end{align*}
+With this norm, the space of subexponential and subgaussian random variables form Banach spaces with respect to $\norm{\cdot}_{\psi_1}$ and $\norm{\cdot}_{\psi_2}$ respectively. These Banach spaces are often known as Orlicz spaces.
+
+Our first application of Hoeffding-Chernoff-Azuma and Bernstein's inequality will be the Johnson-Lindenstrauss lemma\footnote{While this lemma was only a small, and rather easy, part of a hard technical paper of Johnson and Lindenstrauss, the lemma is (supposedly) one of the most cited lemmas in computer science.}.
+
+\begin{theorem}[Johnson-Lindenstrauss lemma \cite{johnson1984extensions}]
+  \label{thm:johnson-lindenstrauss}
+  Let $F \subset \R^N$ be a finite set.
+  Then for any $\varepsilon > 0$, there exists a linear mapping $\varphi: F \to \R^n$ with $n \leq \frac{C}{\varepsilon^2} \log(\#F)$ such that the mapping does not distort distances too much, i.e. the following inequalities hold for all $x$ and $y$ in $F$.
+  \begin{align*}
+    (1-\varepsilon) \norm{x-y}_2 \leq \norm{\varphi(x) - \varphi(y)}_2 \leq (1+\varepsilon) \norm{x-y}_2
+  \end{align*}
+\end{theorem}
+
+  This is useful to computer scientists because it allow dimension reduction.
+  Often, one has finitely many vectors in a very high dimensional space, and one only cares about their metric structure.
+  This theorem allows one to reduce the ambient dimension significantly while not distorting the metric structure too much, and furthermore, the new ambient dimension is $O(\log \#F)$, whereas creating a metric graph would involve $O(\#F^2)$ computations.
+
+While the $\ell^2$ norm is natural for geometry, in computer science applications, the $\ell^1$ norm is preferred, because of its relation to linear programming. So a natural follow up question is whether one can perform similar dimension reduction in $\ell^1$ instead.
+This was open for a long time, but recently shown to be impossible (see \cite{10.1145/1089023.1089026}) in a very strong way.
+It was shown that in order to have at most $\varepsilon$ distortion in the $\ell^1$ distance, the ambient dimension would be at least $C \# F$, i.e. linear in the size of the dataset, rather than logarithmic. The original proof is this fact was quite long and non-trivial, but Lee and Naor soon gave a simpler proof (see \cite{lee2004embedding}) that relied on some highly non-trivial functional analysis. Johnson and Naor also characterized Banach spaces that allow strong dimension reduction, and it turns out those spaces are quite similar to Hilbert spaces (see \cite{2008arXiv0807.1919J}).
+
+\begin{proof}[Proof of Theorem \ref{thm:johnson-lindenstrauss}]
+  Define a set $V \subset \R^n$ in the following manner.
+  \begin{align*}
+    V = \left\{ \frac{x-y}{\norm{x-y}_2} \mid \{x, y\} \subset F\text{ and }x \neq y \right\}
+  \end{align*}
+  We will work with this set $V$ instead.
+  $V$ is contained in $S^N$, and has cardinality $\frac{\#F^2 - \#F}{2}$.
+
+  Let $G$ be an $n \times N$ matrix with i.i.d subgaussian entries $g_{ij}$ satisfying the following two properties.
+  \begin{align*}
+    \E(g_{ij}) &= 0 \\
+    \E(g_{ij}^2) &= 1
+  \end{align*}
+  Fix a point $v \in V$. We will prove that the following inequality holds with high probability.
+  \begin{align*}
+    \left| \norm{Gv}_2 - n \right| \leq \varepsilon
+  \end{align*}
+  If the probability is high enough, we can do this for all elements of $V$ simultaneously using the union bound.
+\end{proof}
+
+\printbibliography
 
 \end{document}

@@ -44,7 +44,6 @@
     %\everyxy={<2.5em,0em>:} % Sets the scale I like
  \usepackage[colorlinks,
              linkcolor=black,
-             pagebackref,
              bookmarksnumbered=true]{hyperref}
 
 %%%%%%% Pagestyle stuff %%%%%%%%%%%%%%%%%%%
@@ -65,7 +64,16 @@
    \raggedbottom                         %%
 %%%%%%% End Pagestyle stuff %%%%%%%%%%%%%%%
 
-\bibliographystyle{alpha}
+% Bibliography related
+\usepackage[
+            hyperref=true,
+            url=false,
+            isbn=false,
+            backref=true,
+            style=alphabetic,
+            block=none
+]{biblatex}
+\addbibresource{references.bib}
 
 
 

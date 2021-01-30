@@ -585,11 +585,62 @@ It was shown that in order to have at most $\varepsilon$ distortion in the $\ell
     \E(g_{ij}) &= 0 \\
     \E(g_{ij}^2) &= 1
   \end{align*}
-  Fix a point $v \in V$. We will prove that the following inequality holds with high probability.
+  Fix a point $v \in V$ and let $n = \frac{\theta}{\varepsilon^2} \log(\#F)$, where $\theta$ a parameter we'll pick later.
+  We will prove that the following inequality holds with high probability.
   \begin{align*}
-    \left| \norm{Gv}_2 - n \right| \leq \varepsilon
+    \left| \norm{Gv}_2 - \sqrt{n} \right| \leq \varepsilon
   \end{align*}
   If the probability is high enough, we can do this for all elements of $V$ simultaneously using the union bound.
+
+  Let $i \in \{1, \ldots, n\}$. Then we define $Y_i$ to be the $i$\textsuperscript{th} entry of $Gv$.
+  \begin{align*}
+    Y_i = \sum_{j=1}^N g_{ij}v_i
+  \end{align*}
+  We then compute the first and second moments of $Y_i$.
+  \begin{align*}
+    \E(Y_i) &= 0 \\
+    \E(Y_i^2) &= \sum_{j=1}^{n} v_i^2 \E(g_{ij}^2) \\
+            &= 1
+  \end{align*}
+  The random variable $Y_i$ is a linear combination of subgaussian random variable, and thus is also subgaussian. Also, as $i \neq i^{\prime}$, $Y_i$ and $Y_{i^{\prime}}$ are i.i.d.
+
+  Let us now get estimates on $\norm{Gv}_2^2 - n$.
+  \begin{align*}
+    \norm{Gv}_2^2 - n &= \sum_{i=1}^n Y_i^2 - n \\
+                      &= \sum_{i=1}^n (Y_i^2 - 1)
+  \end{align*}
+  Let $Z_i = Y_i^2 - 1$. Then $\E(Z_i) = 0$, and $Z_i$ are subexponential. This is a consequence of the fact that squares of subgaussian random variables are subexponential, which can be checked using the tail bound, or the moment condition.
+
+  We use Bernstein's inequality to control the tail of the sum of $Z_i$.
+  \begin{align*}
+    \P\left( \left| \norm{Gv}_2^2 - n \right| > t \right)
+    &= \P\left( \left| \sum_{i=1}^n Z_i \right| > t \right) \\
+    &\leq 2\exp\left( -c \left( \frac{t^2}{n} \wedge t \right) \right)
+  \end{align*}
+  Set $t = \varepsilon n$, where $\varepsilon < 1$. In this regime, $t^2 < t$, which means the tail bound is $2 \exp\left( -c\frac{t^2}{n} \right)$.
+
+  We now use the union bound to bound the probability that some $v \in V$ violates this condition.
+  \begin{align*}
+    \P\left( \exists\ v \in V \mid \left| \norm{Gv}_2^2 - n \right| > \varepsilon n \right)
+    &\leq 2 \exp\left( -c \varepsilon^2 n \right) \cdot \#F \\
+    &= 2 \exp\left( -c \varepsilon^2 \frac{\theta}{\varepsilon^2} \log(\#F) + \log(\#F) \right) \\
+    &= \#F^{2(1 - c\theta)}
+  \end{align*}
+  A large enough $\theta$ makes the upper bound much smaller than $1$.
+
+  Thus, with very high probability, $\left| \norm{Gv}_2^2 - n \right| \leq \varepsilon n$.
+  We claim that this matrix $\varphi \coloneqq \frac{G}{\sqrt{n}}$ does the dimension reduction with distortion bounded by $\varepsilon$.
+  This can be seen by expanding out the definition of $v$.
+  \begin{align*}
+    \varepsilon n
+    &\geq \left| \norm{Gv}_2^2 - n \right| \\
+    &= \left| \frac{\norm{Gx - Gy}_2^2}{\norm{x-y}_2^2} - n \right|
+  \end{align*}
+  Dividing both sides by $n$, we get the inequality we wanted.
+  \begin{align*}
+    \varepsilon \geq \left| \frac{\norm{\varphi x - \varphi y}_2^2}{\norm{x-y}_2^2} - 1 \right|
+  \end{align*}
+  This proves the result.
 \end{proof}
 
 \printbibliography

@@ -24,7 +24,7 @@
 High dimensional probability is the study of random variables taking values in $\RR^n$ for large but fixed values of $n$.
 While this area has always been studied by classical probability theorists, it has also attracted attention from computer scientists, especially since the design and analysis of fast probabilistic algorithms requires tools and theorems from this field.
 A classical result that arises from pure mathematics, but has several real life applications is Dvoretzky's theorem, whose statement does not involve any probability at all, and yet the proof uses concentration inequalities.
-\begin{theorem}[Dvoretzky's theorem]
+\begin{theorem}[Dvoretzky's theorem \cite{dvoredsky1961some}]
   Let $X$ be an $n$-dimensional normed vector space. Then for any $\varepsilon > 0$, there exists a constant $c(\varepsilon) > 0$, and a linear subspace $E$ of $X$ such that, $\dim(E) \geq c(\varepsilon) \log(n)$, and for all $v \in E$, the following inequality relating the ambient norm and the Euclidean norm on $E$.
   \begin{align*}
     (1-\varepsilon) \norm{v}_2 \leq \frac{\norm{v}_X}{M(X)} \leq (1+\varepsilon)\norm{x}_2
@@ -44,10 +44,10 @@ A classical result that arises from pure mathematics, but has several real life 
 
 \paragraph{A computer science application of Dvoretzky's theorem}
 
-Consider a subset $S$ of $\left(\ell^2\right)^N$, given by inequalities involving the norms of elements in $\left( \ell^2 \right)N$.
+Consider a subset $S$ of $\ell_2^N$, given by inequalities involving the norms of elements in $\ell_2^N$.
 Suppose that we are required to optimize a linear function $f$ on the set $S$.
 Since $S$ is given by inequalities involve the $\ell^2$-norm, it will be and intersection of interiors of ellipsoids, and consequently, optimizing $f$ will be computationally expensive.
-But we can get around the computational expense by embedding $\left(\ell^2\right)^N$ into $\ell_1^M$, where $M$ is $O(N)$, by Remark \ref{rem1}.
+But we can get around the computational expense by embedding $\ell_2^N$ into $\ell_1^M$, where $M$ is $O(N)$, by Remark \ref{rem1}.
 Since this embedding does not distort distances too much, we can replace $S$ with a nearby polytope, given by inequalities involving the $\ell^1$ norm instead.
 Optimizing a linear function on a polytope is computationally much easier, thanks to linear programming.
 
@@ -83,7 +83,7 @@ The starting point in answering (ii) is understanding \emph{concentration of mea
 \section{Concentration of measure}
 \label{sec:conc-meas}
 
-Concentration of measure was originally observed Lévy, but first used by Milman in the early 70s.
+Concentration of measure was originally observed Lévy, but first used by Milman in the early 1970s.
 Roughly speaking, concentration of measure is the following phenomenon: suppose $(X, d, \P)$ is a metric space endowed with a probability measure and $f: X \to \RR$ is a ``nice'' function.
 Then the value of $f$ is essentially constant, i.e. there exists some constant $M(f)$ such that for small enough $\varepsilon$, the following probability bound holds.
 \begin{align*}
@@ -92,14 +92,15 @@ Then the value of $f$ is essentially constant, i.e. there exists some constant $
 Usually by nice, we will mean $1$-Lipschitz, although similar results hold for a more general class of functions like convex or quasi-convex functions.
 We begin with the simplest version of measure concentration.
 
-\paragraph{Concentration for linear functions}
+\subsection{Concentration for linear functions}
+\label{sec:conc-line-funct}
 
 Let the metric space $X$ in this setting be $\R^n$ for some fixed $n$, and let $\{X_1, \ldots, X_n \}$ be i.i.d scalar random variables.
 Let $f: \R^n \to \R$ be a linear function, given by taking inner product with some vector $\mathbf{a}$.
 We define $Y$ to be $\sum_{i=1}^n a_i X_i$.
 We will prove concentration inequalities for $Y$ by imposing conditions on $X_i$: one such condition is requiring $X_i$ to be \emph{subgaussian}.
 
-\subsection{Subgaussian random variables}
+\subsubsection{Subgaussian random variables}
 \label{sec:subg-rand-vari}
 
 \begin{definition}[Subgaussian decay]
@@ -348,7 +349,7 @@ To prove the theorem, we will need several lemmas.
 \end{proof}
 
 We now prove a moment bound for sums of subgaussian random variables.
-\begin{theorem}[Khinchin's inequality]
+\begin{theorem}[Khintchine's inequality \cite{khintchine1923dyadische}]
   Let $\{X_1, \ldots, X_n\}$ be i.i.d subgaussian random variables with $\E(X_i) = 0$ and $\E(X_i^2) = 1$.
   Then for any $p \in [1, \infty)$, there exist constants $A_p$ and $B_p$ greater than $0$ such that for any vector $\mathbf{a} \in \R^n$, the following moment bound holds.
   \begin{align*}
@@ -376,11 +377,11 @@ We now prove a moment bound for sums of subgaussian random variables.
   \begin{align*}
     \E(|Y|^2) &\leq \sqrt{\E(|Y|) \E(|Y|^3)}
   \end{align*}
-  Using Khinchin's inequality for $p=3$, we deal with $\E(|Y|^3) \leq B_3 \norm{\mathbf{a}}_2$.
+  Using Khintchine's inequality for $p=3$, we deal with $\E(|Y|^3) \leq B_3 \norm{\mathbf{a}}_2$.
   Squaring both sides, we see that $A_1 = B_3^{-3}$ works, and the proof is complete.
 \end{proof}
-There is a far reaching generalization of Khinchin's inequality, due to Kahane.
-\begin{theorem}[Kahane inequality]
+There is a far reaching generalization of Khintchine's inequality, due to Kahane.
+\begin{theorem}[Kahane inequality \cite{kahane1964sommes}]
   Let $X$ be a normed vector space, and let $\{\varepsilon_1, \ldots, \varepsilon_n\}$ be i.i.d. Rademacher random variables.
   For any $p \in [1, \infty)$, there exists $A_p$ and $B_p$ greater than $0$ such that for any $\{a_1, \ldots, a_n\}$ in $X$, the following holds.
   \begin{align*}
@@ -467,7 +468,7 @@ Contrast this with the second case of the tail in Bennett's inequality.
 The theorems in this section illustrate how strong the condition of being subgaussian is, especially when taking sums of i.i.d copies of subgaussians.
 In the next section, we will investigate another similar tail decay condition.
 
-\subsection{Subexponential random variables}
+\subsubsection{Subexponential random variables}
 \label{sec:subexp-rand-vari}
 
 \begin{definition}[Subexponential random variable]
@@ -538,7 +539,7 @@ We can now prove a strong tail bound for sums of subexponential random variables
   For small $\lambda$, we have the upper bound to be $\exp(\widetilde{C}\lambda^2)$ and then we optimize over $\lambda$, and for large $t$, we use Markov's inequality.
 \end{proof}
 
-\subsection{Applications of subgaussian and subexpontial random variables}
+\subsubsection{Applications of subgaussian and subexpontial random variables}
 \label{sec:appl-subg-subexp}
 
 Before we list some of the applications, we make a remark on why the conditions for subexpontial and subgaussian random variables were called $\psi_1$ and $\psi_2$ conditions respectively.
@@ -564,7 +565,7 @@ Our first application of Hoeffding-Chernoff-Azuma and Bernstein's inequality wil
   \end{align*}
 \end{theorem}
 
-  This is useful to computer scientists because it allow dimension reduction.
+  This is useful for computer scientists because it allow dimension reduction.
   Often, one has finitely many vectors in a very high dimensional space, and one only cares about their metric structure.
   This theorem allows one to reduce the ambient dimension significantly while not distorting the metric structure too much, and furthermore, the new ambient dimension is $O(\log \#F)$, whereas creating a metric graph would involve $O(\#F^2)$ computations.
 
@@ -641,6 +642,195 @@ It was shown that in order to have at most $\varepsilon$ distortion in the $\ell
     \varepsilon \geq \left| \frac{\norm{\varphi x - \varphi y}_2^2}{\norm{x-y}_2^2} - 1 \right|
   \end{align*}
   This proves the result.
+\end{proof}
+
+\subsection{Concentration for quadratic forms}
+\label{sec:conc-quadr-forms}
+
+Let $\{X_i\}$ be i.i.d copes of a random variable, and let $A$ be a symmetric matrix associated to a quadratic form.
+We define a new random variable $Y$ by evaluating the quadratic form $A$ on $\mathbf{X} = \left( X_1, \ldots, X_n \right)$.
+\begin{align*}
+  Y \coloneqq \langle \mathbf{X}, A\mathbf{X} \rangle
+\end{align*}
+Consider now the singular value decomposition of $A$, i.e. a decomposition as $UDV$, where $U$ and $V$ lie in $O(n)$ and $D$ is diagonal.
+The diagonal entries of $D$ can be arranged to be non-decreasing, i.e. $s_1(A) \geq s_2(A) \geq \cdots \geq s_n(A) \geq 0$.
+The diagonal entries are called the singular values of $A$.
+The $j$\textsuperscript{th} singular value of $A$ is the square root of the $j$\textsuperscript{th} largest eigenvalue of $AA^{\top}$.
+
+We also consider the Frobenius norm of the matrix $A$.
+\begin{align*}
+  \norm{A}_F \coloneqq \left( \sum_{i,j=1}^n a_{ij} \right)^{\frac{1}{2}}
+\end{align*}
+This is the inner-product norm for the following inner product on matrices.
+\begin{align*}
+  \langle A, B \rangle = \mathrm{tr}(AB^{\top})
+\end{align*}
+One can express the Frobenius norm of $A$ using the singular values.
+\begin{align*}
+  \norm{A}_F^2 = \sum_{i=1}^{n} s_i(A)^2
+\end{align*}
+Geometrically, the singular values are the lengths of the axes of the ellipsoid that is the image under $A$ of the standard sphere in $\R^n$.
+Note that one can also express the operator norm in terms of the singular values: it's the $\sup$ norm on the singular values, just like the Frobenius norm is the $\ell^2$-norm on the singular values.
+
+We can now state a concentration inequality for quadratic forms.
+\begin{theorem}[Hanson-Wright inequality (\cite{hanson1971bound}  and \cite{wright1973bound})]
+  \label{thm:hanson-wright}
+  Let $A$ be any $n \times n$ matrix, and let $\{X_1, \ldots, X_n\}$ be i.i.d subgaussian random variables with $\E(X_i) = 0$.
+  Let $\mathbf{X} = (X_1, \ldots, X_n) \in \R^n$. Then for any $t > 0$:
+  \begin{align*}
+    \P\left( \left| \langle \mathbf{X}, A \mathbf{X} \rangle - \E\left( \langle \mathbf{X}, A \mathbf{X} \rangle \right) \right| > t \right)
+    \leq 2 \exp\left( -c \left( \frac{t^2}{\norm{A}_F^2} \wedge \frac{t}{\norm{A}_{\mathrm{op}}} \right) \right)
+  \end{align*}
+\end{theorem}
+\begin{remark}
+  Note that we can only expect a tail like we had in Bernstein's inequality, since entries of $\langle \mathbf{X}, A \mathbf{X} \rangle$ be squares of subgaussians, i.e. subexponential.
+\end{remark}
+\begin{remark}
+  The original papers of Hanson and Wright proved a slightly weaker version of the above theorem.
+  The version stated is from 2013, and appeared in \cite{rudelson2013}.
+\end{remark}
+
+\begin{proof}[Proof of Theorem \ref{thm:hanson-wright}]
+  We first decompose $A$ as the sum of a diagonal matrix $A_{\mathrm{diag}}$, and a matrix $\wt{A}$ with all diagonal entries equal to $0$.
+  \begin{align*}
+    A = A_{\mathrm{diag}} + \wt{A}
+  \end{align*}
+  Since we are trying to bound the probability that $\langle \mathbf{X}, A \mathbf{X} \rangle$ deviates by more than $t$ from its mean, it will suffice to bound the probability that $\langle \mathbf{X}, A_{\mathrm{diag}}\mathbf{X} \rangle$ deviates by more than $\frac{t}{2}$ and the probability that $\langle \mathbf{X}, \wt{A} \mathbf{X} \rangle$ deviates by more than $\frac{t}{2}$.
+  \begin{align*}
+    \P\left( \left| \langle \mathbf{X}, A \mathbf{X} \rangle - \E\left( \langle \mathbf{X}, A \mathbf{X} \rangle \right) \right| > t \right)
+    &\leq \P\left( \left| \langle \mathbf{X}, A_{\mathrm{diag}} \mathbf{X} \rangle - \E\left( \langle \mathbf{X}, A_{\mathrm{diag}} \mathbf{X} \rangle \right) \right| > \frac{t}{2} \right) \\
+      &+ \P\left( \left| \langle \mathbf{X}, \wt{A} \mathbf{X} \rangle - \E\left( \langle \mathbf{X}, \wt{A} \mathbf{X} \rangle \right) \right| > \frac{t}{2} \right)
+  \end{align*}
+  Note that since $\wt{A}$ has zeroes on the diagonal, and the $X_i$s are independent with mean $0$, that means $\E\left( \langle \mathbf{X}, \wt{A} \mathbf{X} \rangle \right) = 0$.
+
+  Observe that the first term is a tail bound on a sum of subexponential random variables.
+  \begin{align*}
+    \langle \mathbf{X}, A_{\mathrm{diag}} \mathbf{X} \rangle - \E\left( \langle \mathbf{X}, A_{\mathrm{diag}} \mathbf{X} \rangle \right)
+    &= \sum_{i=1}^{n} a_{ii}\left( X_i^2 - \E(X_i^2) \right)
+  \end{align*}
+  Since $X_i$ are subgaussian random variables, $X_i^2 - \E(X_i^2)$ are subexponential random variables with mean $0$, which means we can apply Bernstein's inequality.
+  \begin{align*}
+    \P\left( \left| \langle \mathbf{X}, A_{\mathrm{diag}} \mathbf{X} \rangle - \E\left( \langle \mathbf{X}, A_{\mathrm{diag}} \mathbf{X} \rangle \right) \right| > \frac{t}{2} \right)
+    \leq 2 \exp\left( -c \left( \frac{t^2}{\sum_{i=1}^n a_{ii}^2} \wedge \frac{t}{\max(a_{ii})} \right) \right)
+  \end{align*}
+  Note that we can bound the denominators using the appropriate matrix norm.
+  \begin{align*}
+    \sum_{i=1}^{n} a_{ii}^2 &\leq \norm{A}_F^2 \\
+    \max(a_{ii}) &\leq \norm{A}
+  \end{align*}
+  Note that the upper bound for the diagonal term is of the form stated in the theorem, which means that all we need to do prove a similar or better bound for the second term, which involves $\wt{A}$.
+  That boils down to finding a probability bound for the following event.
+  For convenience of notation, we will now denote $\wt{A}$ by just $A$, where it is understood that $A$ is a matrix with all diagonal entries equal to $0$.
+  We will also denote $\langle \mathbf{X}, A \mathbf{X} \rangle$ by $Y$.
+  \begin{align*}
+    \P\left( \left| Y \right| > t \right)
+    \leq 2 \exp\left( -c \left( \frac{t^2}{\norm{A}_F^2} \wedge \frac{t}{\norm{A}_{\mathrm{op}}} \right) \right)
+  \end{align*}
+  Recall that when we proved Bernstein's inequality, we did so bounding the Laplace transform of $Y$, i.e. getting upper bounds for $\E\left( \exp\left( \lambda Y \right) \right)$.
+  Since $Y$ in our case is a quadratic function in independent random variables $X_i$, estimating the Laplace transform is a little tricky, and we need to use \emph{decoupling}.
+
+  Introduce new random variables $\{\delta_1, \ldots, \delta_n\}$ which are independent from each other, as well as all $X_i$, and are distributed like $\mathrm{Bernoulli}\left( \frac{1}{2} \right)$. We then have the following.
+  \begin{align*}
+    \E\left( \exp(\lambda Y) \right)
+    &= \E\left(  \exp\left( 4\lambda \sum_{i,j = 1}^{n} \E_{\delta}\left( \delta_i(1- \delta_j) \right) a_{ij} X_i X_{j} \right) \right)
+  \end{align*}
+  Here, $\E_{\delta}$ represents taking expectation over the sample space of the $\delta_{i}$, and $\E$ represents taking the expectation over the sample space of $X_i$.
+  Note that the equality holds because for $i=j$, $\delta_i(1-\delta_j) = 0$.
+  We now use Jensen's inequality to pull out the $\E_{\delta}$.
+  \begin{align*}
+    \E\left( \exp(\lambda Y) \right)
+    &\leq \E \E_{\delta}\left(  \exp\left( 4\lambda \sum_{i,j = 1}^{n} \left( \delta_i(1- \delta_j) \right) a_{ij} X_i X_{j} \right) \right)
+  \end{align*}
+  Let $I$ be the random subset of $\{1, \ldots, n\}$ where $i \in I$ iff $\delta_i = 1$.
+  We can condition the above expectation on the value of $I$ to simplify things.
+  \begin{align*}
+    \E\left( \exp(\lambda Y) \right)
+    &\leq \E_{\delta} \E \left( \exp\left( 4\lambda \sum_{i \in I} \sum_{j \not \in I} a_{ij} X_i X_j \right) \bigg|\ I \right)
+  \end{align*}
+  We can simplify the inner integral using the fact that $I$ is fixed.
+  \begin{align*}
+    \E \left( \exp\left( 4\lambda \sum_{i \in I} \sum_{j \not \in I} a_{ij} X_i X_j \right) \bigg|\ I \right)
+    &= \prod_{j \not \in I} \E \exp\left( \left[ 4 \lambda \sum_{i \in I} a_{ij} X_i \right] \cdot X_j \right)
+  \end{align*}
+  We now use the fact that each $X_j$ is subgaussian with mean $0$ to bound the right hand side in the following manner.
+  \begin{align}
+    \label{eq:hw-1}
+    \prod_{j \not \in I} \E \exp\left( \left[ 4 \lambda \sum_{i \in I} a_{ij} X_i \right] \cdot X_j \right)
+    &\leq \prod_{j \not \in I} \E \left( \exp\left[ 16 C \lambda^2 \left( \sum_{i \in I} a_{ij} X_i \right)^2 \right] \right)
+  \end{align}
+  We now use a trick to turn the expectation of the quadratic form as in \eqref{eq:hw-1} to expectation of a bilinear form.
+  Note that for a standard normal random variable $g$, one has the following explicit formula for the Laplace transform.
+  \begin{align*}
+    \E\left( \theta g \right) = \exp\left( \frac{\theta^2}{2} \right)
+  \end{align*}
+  Let $\{g_1, \ldots, g_n\}$ be i.i.d standard normal random variables that are independent of $X_{i}$ and $\delta_i$.
+  We get that the right hand side of \eqref{eq:hw-1} is the following.
+  \begin{align*}
+    \prod_{j \not \in I} \E \left( \exp\left[ 16 C \lambda^2 \left( \sum_{i \in I} a_{ij} X_i \right)^2 \right] \right)
+    = \E \left( \exp\left( C^{\prime}\lambda \sum_{j \not \in I} \sum_{i \in I} a_{ij} X_i g_j \right) \right)
+  \end{align*}
+  Repeating this whole process again, with $X_i$ rather than $X_j$, we end up with the following upper bound.
+  \begin{align*}
+    \E \left( \exp\left( 4\lambda \sum_{i \in I} \sum_{j \not \in I} a_{ij} X_i X_j \right) \bigg|\ I \right)
+    &\leq \E\left( \exp\left( C^{\prime \prime} \lambda^2 \sum_{i \in I} \left( \sum_{j \not \in I} a_{ij} g_j \right)^2 \right) \bigg|\ I \right)
+  \end{align*}
+  Note that the upper bound is independent of $X_i$, and only depends on the Bernoulli random variables $\delta_i$ and the normal random variables $g_i$.
+
+  We will now use that fact that $\mathbf{g} = (g_1, \ldots, g_n)$ is a rotation invariant random vector in $\R^n$ to estimate the upper bound.
+  Let $P_{I}$ be the projection to the subspace spanned by $\{e_i\}_{i \in I}$, and let $B_I = P_{I}A(\mathrm{Id} - P_I)$.
+  Then the innermost double sum can be expressed as a norm.
+  \begin{align*}
+    \sum_{i \in I} \left( \sum_{j \not \in I} a_{ij} g_j \right)^2 = \norm{B_I \mathbf{g}}_2^2
+  \end{align*}
+  This means we need to estimate the following conditional expectation.
+  \begin{align*}
+    \E\left( C^{\prime \prime} \lambda^2 \norm{B_I \mathbf{g}}_2^2 \bigg|\ I \right)
+  \end{align*}
+  Let $U_ID_IV_I$ be the singular value decomposition of $B_I$.
+  Since $\norm{\cdot}_2$ is invariant under $O(n)$ action, and the distribution of $\mathbf{g}$ is also $O(n)$ invariant, $B_I \mathbf{g}$ has the same distribution as $D_I \mathbf{g}$.
+  This means we really just need to understand the distribution of the singular values of $B_I$.
+  \begin{align*}
+    \E\left( \exp\left(   C^{\prime \prime} \lambda^2 \norm{B_I \mathbf{g}}_2^2 \right) \bigg|\ I \right)
+    &= \E\left( \exp\left( C^{\prime \prime} \lambda^2 \norm{D_I \mathbf{g}}_2^2 \right)  \bigg|\ I \right) \\
+    &= \E\left( \exp\left(  C^{\prime \prime} \lambda^2 \sum_{j=1}^n s_j^2(B_I) g_j^2 \right)  \bigg|\ I \right) \\
+    &= \prod_{j=1}^n \E\left( \exp\left( C^{\prime \prime} \lambda^2 s_j^2(B_I) g_j^2 \right) \bigg|\ I \right)
+  \end{align*}
+  One can explicitly compute $\E(\exp(\theta g^2))$ for a normal random variable $g$ for $\theta \in \left[ 0, \frac{1}{2} \right]$.
+  \begin{align*}
+    \E(\exp\left( \theta g^2 \right)) = \frac{1}{\sqrt{1 - 2\theta}}
+  \end{align*}
+  Hence,
+  \begin{align*}
+    \E\left( C^{\prime \prime} \lambda^2 \norm{B_I \mathbf{g}}_2^2 \bigg|\ I \right)
+    &= \prod_{j=1}^n \left( 1 - 2 C^{\prime \prime} \lambda^2 s_j^2(B_I) \right)^{-\frac{1}{2}}
+  \end{align*}
+  For $x \in \left[ 0 , \frac{1}{2} \right]$, $\frac{1}{\sqrt{1-x}} \leq e^x$. This lets us bound the right hand side in the following manner.
+  \begin{align*}
+    \prod_{j=1}^n \left( 1 - 2 C^{\prime \prime} \lambda^2 s_j^2(B_I) \right)^{-\frac{1}{2}}
+    &\leq \prod_{j=1}^n \exp\left( 2 C^{\prime \prime} \lambda^2 s_j^2(B_I) \right)
+  \end{align*}
+  Note however that to use the simplification, we required $2 C^{\prime \prime} \lambda^2 s_j^2(B_I) \leq \frac{1}{2}$.
+  If we pick a $\lambda$ smaller than $\frac{c^{\prime \prime \prime}}{s_1(B_I)}$, then the inequalities are valid.
+  That ends up giving the following bound.
+  \begin{align*}
+    \E\left( \exp\left( C \lambda \norm{B_I \mathbf{g}}_2^2 \right) \right)
+    &\leq \exp\left( \wt{C} \lambda^2 \norm{B_I}_F^2 \right)
+  \end{align*}
+  This is valid when $\lambda \leq \frac{c^{\prime \prime \prime}}{s_1(B_I)} = \frac{c^{\prime \prime \prime}}{\norm{B_I}}$.
+  Finally, we can get rid of the dependence on $I$ using the following inequalities involving matrix norms.
+  \begin{align*}
+    \norm{B_I}_F &= \norm{P_IA(\mathrm{Id} - P_I)}_F \\ &\leq \norm{A}_F \\
+    \norm{B_I} &= \norm{P_IA(\mathrm{Id} - P_I)} \\ &\leq \norm{A}
+  \end{align*}
+  We can now conclude our estimates. We get the following inequality for all $\lambda$ less than $\frac{c^{\prime \prime \prime}}{\norm{A}}$.
+  \begin{align*}
+    \E\left( \exp(\lambda Y) \right)
+    &\leq \E_{\delta} \E\left( \exp\left( C \lambda \norm{B_I \mathbf{g}}_2^2 \right) \right) \\
+    &\leq \exp\left( \wt{C} \lambda^2 \norm{B_I}_F^2 \right) \\
+    &\leq \exp\left( \wt{C} \lambda^2 \norm{A}_F^2 \right)
+  \end{align*}
+  We are able to integrate easily over the $\delta$ sample space because the right hand side does not depend on $I$ at all.
+  The rest of the proof follows exactly like the end of Bernstein's inequality, where we optimized over $\lambda$ to get the best bound via Markov's inequality.
 \end{proof}
 
 \printbibliography

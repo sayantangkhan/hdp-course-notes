@@ -833,6 +833,73 @@ We can now state a concentration inequality for quadratic forms.
   The rest of the proof follows exactly like the end of Bernstein's inequality, where we optimized over $\lambda$ to get the best bound via Markov's inequality.
 \end{proof}
 
+We now show a rather unexpected application of the Hanson-Wright inequality.
+\begin{theorem}
+ Let $A$ be an $n \times n$ matrix, and let $\mathbf{X} \in \R^n$ be a random vector with i.i.d subgaussian coordinates with mean $0$ and variance $1$.
+ Then for any $\tau > 0$, the following holds.
+ \begin{align*}
+   \P\left( \left| \norm{A \mathbf{X}}_2 - \norm{A}_F \right| > \tau \right)
+   \leq 2 \exp\left( -c \frac{\tau^2}{\norm{A}^2} \right)
+ \end{align*}
+\end{theorem}
+\begin{remark}
+  This result is surprising for two reasons: first, we will prove this using the Hanson-Wright inequality, but the tail bound in this inequality is better than the tail bound in Hanson-Wright. Second, all of our earlier concentration inequalities were concentration inequalities about the mean, but in this case $\E\left( \norm{A \mathbf{X}}_2 \right) \neq \norm{A}_F$.
+\end{remark}
+
+\begin{proof}
+  Let $Y = \norm{A \mathbf{X}}_2^2 = \langle \mathbf{X}, A^{\top}A \mathbf{X} \rangle$.
+  This expression as the quadratic form $A^\top A$ will let us apply the Hanson-Wright inequality. Using the Hanson-Wright inequality, we obtain the following.
+  \begin{align*}
+    \P\left( \left| \langle \mathbf{X}, A^{\top}A \mathbf{X} \rangle
+    - \E\left( \langle \mathbf{X}, A^{\top}A \mathbf{X} \rangle \right)
+    \right| > t \right)
+    \leq 2 \exp\left( -c \left[ \frac{t^2}{\norm{A^{\top}A}_F^2} \wedge \frac{t}{\norm{A^{\top}A}} \right] \right)
+  \end{align*}
+  We can explicitly evaluate $\E \left( \langle \mathbf{X}, A^{\top}A \mathbf{X} \rangle \right)$: since the entries of $\mathbf{X}$ are i.i.d with mean $0$ and variance $1$, the expectation simplifies to $\mathrm{tr}(A^{\top}A) = \norm{A}_F^2$.
+  We also have these inequalities involving products of matrices.
+  \begin{align*}
+    \norm{AB}_F &\leq \norm{A} \cdot \norm{B}_F \\
+    \norm{AB} &\leq \norm{A} \cdot \norm{B}
+  \end{align*}
+  Using these two inequalities, we can simplify the inequality we got from the application of Hanson-Wright inequality.
+  \begin{align*}
+    \P\left( \left| \norm{A \mathbf{X}}_2^2 - \norm{A}_F^2 \right| > t \right)
+    \leq 2 \exp\left( -c \left[ \frac{t^2}{\norm{A}^2 \cdot \norm{A}_F^2} \wedge \frac{t}{\norm{A}^2} \right] \right)
+  \end{align*}
+  Let $t = \varepsilon \cdot \norm{A}_F^2$. Then the above inequality can be rewritten as follows.
+  \begin{align*}
+    \P\left( \left| \frac{ \norm{A \mathbf{X}}_2^2}{ \norm{A}_F^2}  - 1 \right| > \varepsilon \right)
+    \leq 2 \exp\left( -c \frac{\norm{A}_F^2}{\norm{A}^2} \left[ \varepsilon^2 \wedge \varepsilon \right] \right)
+  \end{align*}
+  Rewriting the inequality in this manner makes it clearer which of the terms in the upper bound is smaller.
+  The analysis splits into two cases.
+  \begin{description}
+  \item[\textbf{Case 1} ($\varepsilon \leq 1$):] In this case, $\varepsilon^2 \leq \varepsilon$, so the tail bound simplifies in the following manner.
+    \begin{align*}
+    \P\left( \left| \frac{ \norm{A \mathbf{X}}_2^2}{ \norm{A}_F^2}  - 1 \right| > \varepsilon \right)
+      \leq 2 \exp \left( -c \frac{\norm{A}_F^2}{\norm{A}^2} \varepsilon^2 \right)
+    \end{align*}
+    Observe now that for positive values of $x$, $|x^2-1| \geq |x-1|$. This means that we can replace the $\frac{\norm{A \mathbf{X}}_2^2}{\norm{A}_F^2}$ in left hand side of the above inequality by its square root.
+    We do that, and set $\tau = \varepsilon \norm{A}_F$.
+    \begin{align*}
+      \P\left( |\norm{A \mathbf{X}}_2 - \norm{A}_F| > \tau \right)
+      \leq 2 \exp \left( -c \frac{\tau^2}{\norm{A}^2} \right)
+    \end{align*}
+    This proves the inequality for all $\tau \in \left[ 0, \norm{A}_F \right]$.
+  \item[\textbf{Case 2} ($\varepsilon > 1$):] In this case $\varepsilon \leq \varepsilon^2$, so the tail bound simplifies in the following manner.
+    \begin{align*}
+    \P\left( \left| \frac{ \norm{A \mathbf{X}}_2^2}{ \norm{A}_F^2}  - 1 \right| > \varepsilon \right)
+      \leq 2 \exp \left( -c \frac{\norm{A}_F^2}{\norm{A}^2} \varepsilon \right)
+    \end{align*}
+    Note again that for positive values of $x$, $|x^2 - 1| \geq |x-1|^2$. We use this fact to make a substitution on the left hand side, and let $\tau = \sqrt{\varepsilon} \norm{A}_F$.
+    \begin{align*}
+      \P\left( |\norm{A \mathbf{X}}_2 - \norm{A}_F| > \tau \right)
+      \leq 2 \exp  \left( -c \frac{\norm{A}_F^2}{\norm{A}^2} \varepsilon \right)
+    \end{align*}
+    This proves in the inequality for $\tau \in \left( \norm{A}_F, \infty \right)$.
+  \end{description}
+\end{proof}
+
 \printbibliography
 
 \end{document}

@@ -54,24 +54,24 @@ Optimizing a linear function on a polytope is computationally much easier, thank
 \paragraph{Empirical covariance estimation}
 
 Let $X$ be an $\RR^n$-valued random variable, and let $\E(X) = 0$.
-The covariance of $X$ is $\E(X^{\top}X)$, and will be denoted by $A$.
+The covariance of $X$ is $\E(X^{\top}X)$, and will be denoted by $\Sigma$.
 Let $\left\{ X_1, X_2, \ldots, X_m \right\}$ be i.i.d. samples of $X$.
-We define the sample covariance $A_m$ in the following manner.
+We define the sample covariance $\Sigma_m$ in the following manner.
 \begin{align*}
-  A_n = \frac{\sum_{i=1}^m X_i^{\top}X_i}{m}
+  \Sigma_n = \frac{\sum_{i=1}^m X_i^{\top}X_i}{m}
 \end{align*}
-As $m$ tends to infinity, the sample covariance $A_m$ will approach the true covariance, as we would expect the law of large numbers to predict.
+As $m$ tends to infinity, the sample covariance $\Sigma_m$ will approach the true covariance, as we would expect the law of large numbers to predict.
 A harder, and more interesting question is to determine how many samples do we need to take to be within some threshold of the true covariance with high probability.
 
 Just like in the scalar setting, one answers the question by proving appropriate concentration inequalities for matrix valued random variables.
-Here is the most general set up: Let $A_m$ and $A$ be matrices mapping some normed space $X$ to some other normed space $Y$.
-We define the distance between $A_m$ and $A$ using the operator norm.
+Here is the most general set up: Let $\Sigma_m$ and $\Sigma$ be matrices mapping some normed space $X$ to some other normed space $Y$.
+We define the distance between $\Sigma_m$ and $\Sigma$ using the operator norm.
 \begin{align*}
-  \norm{A_m - A}_{\mathrm{op}} &= \max_{\norm{v}_x \leq 1} \norm{(A_m-A)v}_Y \\
-                               &= \max_{\norm{v}_x \leq 1} \max_{\norm{w}_{Y^{\ast}} \leq 1} w\left( (A_m - A)v \right) \\
-                               &= \max_{\substack{(v, w) \in X \times Y^{\ast} \\ \norm{v} \leq 1 \\ \norm{w} \leq 1}} w((A_m - A)v)
+  \norm{\Sigma_m - \Sigma}_{\mathrm{op}} &= \max_{\norm{v}_x \leq 1} \norm{(\Sigma_m-\Sigma)v}_Y \\
+                               &= \max_{\norm{v}_x \leq 1} \max_{\norm{w}_{Y^{\ast}} \leq 1} w\left( (\Sigma_m - \Sigma)v \right) \\
+                               &= \max_{\substack{(v, w) \in X \times Y^{\ast} \\ \norm{v} \leq 1 \\ \norm{w} \leq 1}} w((\Sigma_m - \Sigma)v)
 \end{align*}
-We can consider $w((A_m -A)v)$ to be a family of scalar random variables parameterized by points in $X \times Y^{\ast}$, i.e. a random process $V_u$ parameterized by $u \in X \times Y^{\ast}$.
+We can consider $w((\Sigma_m -\Sigma)v)$ to be a family of scalar random variables parameterized by points in $X \times Y^{\ast}$, i.e. a random process $V_u$ parameterized by $u \in X \times Y^{\ast}$.
 This leads to the following two questions.
 \begin{enumerate}[(i)]
 \item How to bound $\E \max V_u$.
@@ -1038,6 +1038,113 @@ Using this corollary, we can prove the matrix Bernstein inequality.
   \end{align*}
   Note that this bound comes from \eqref{eq:8}, which is only valid when $\lambda \max \norm{X_j} \leq 1$.
   We optimize over the values of $\lambda$ now. This calculation is identical to the one we did for the original Bernstein inequality, and the tail bound follows.
+\end{proof}
+
+We now discuss a few corollaries of the matrix Bernstein inequality.
+The first corollary pertains to matrices that need not be symmetric, or even square.
+
+\begin{corollary}
+  Let $\{X_1, \ldots, X_N\}$ be $m \times n$ matrices, satisfying the following conditions for some constant $K$.
+  \begin{align*}
+    \E(X_j) &= 0 \\
+    \norm{X_j}_{\infty} &\leq K
+  \end{align*}
+  Let $\sigma^2 = \norm{\sum_{j=1}^N \E\left( X_j X_j^{\top} \right)} + \norm{\sum_{j=1}^N \E\left( X_j^{\top}X_j \right)}$.
+  Then we have the following tail bound.
+  \begin{align*}
+    \P\left( \norm{\sum_{j=1}^N X_j} > t \right)
+    \leq 2(n+m) \exp\left( -c \left( \frac{t^2}{\sigma^2} \wedge \frac{t}{K} \right) \right)
+  \end{align*}
+\end{corollary}
+\begin{proof}
+  The proof follows from Theorem \ref{thm:matrix-bernstein} after symmetrizing the rectangular matrices.
+  Consider the $(n+m) \times (n+m)$ matrix $X_j^s$, constructed in the following manner.
+  \begin{align*}
+    X_j^s =
+    \begin{pmatrix}
+      0 & X_j  \\
+      X_j^{\top} & 0
+    \end{pmatrix}
+  \end{align*}
+  Applying Theorem \ref{thm:matrix-bernstein} to $\{X_1^s, \ldots, X_N^s\}$ gives us the proof.
+\end{proof}
+
+Another easy corollary is getting expectation bounds from tail bounds.
+\begin{corollary}
+  \label{cor:exp-bound}
+  Let $\{X_1, \ldots, X_N\}$ be as in Theorem \ref{thm:matrix-bernstein}. Then we have the following expectation bound.
+  \begin{align*}
+    \E \norm{\sum_{j=1}^N X_j} \leq C \left( \sigma \sqrt{\log(n)} + K \log(n) \right)
+  \end{align*}
+\end{corollary}
+
+We now return to the problem of covariance estimation that we mentioned in the introduction.
+
+\paragraph{Empirical covariance estimation}
+
+Let $X$ be an $\R^n$-valued random variable with mean $0$.
+The population covariance $\Sigma$ is defined to be $\E X X^{\top}$.
+Let $\{X_1, \ldots, X_N\}$ be i.i.d copies of $X$.
+We define sample covariance $\Sigma_N$ to be the sample average of the covariance of each $X_j$.
+\begin{align*}
+  \Sigma_N \coloneqq \frac{\sum_{j=1}^N X_j X_j^{\top}}{N}
+\end{align*}
+By the law of large numbers, $\Sigma_N$ converges to the population covariance.
+However, it's more useful to know how fast $\Sigma_N$ converges to $\Sigma$.
+\begin{theorem}
+  Let $X$ and $\{X_1, \ldots, X_N\}$ be random vectors as described previously.
+  Suppose that the following inequality holds almost surely for some constant $S$.
+  \begin{align*}
+    \norm{X}_2^2 \leq S \E\norm{X}_2^2
+  \end{align*}
+  Let $\varepsilon \in (0,1)$, and set $N$ to be the following.
+  \begin{align*}
+    N = C \frac{S n \log(n)}{\varepsilon^2}
+  \end{align*}
+  Here, $C$ is some fixed constant, and we round $N$ to the nearest integer.
+  Then we have the following concentration inequality for sample covariance.
+  \begin{align*}
+    \E \norm{\Sigma_N - \Sigma} \leq \varepsilon \cdot \norm{\Sigma}
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  Define $Y_j$ to be $X_j X_j^{\top} - \Sigma$.
+  The expectation of $Y_j$ is clearly $0$.
+  We can express the left hand side of the inequality we are trying to prove in terms of $Y_j$.
+  \begin{align*}
+    \E \norm{\Sigma_N - \Sigma} &= \E \norm{ \frac{\sum_{j=1}^N X_jX_j^{\top}}{N} - \Sigma } \\
+                                &= \frac{1}{N} \E \norm{\sum_{j=1}^N Y_j}
+  \end{align*}
+  By Corollary \ref{cor:exp-bound}, we can bound the above expectation.
+  \begin{align}
+    \label{eq:9}
+    \E \norm{\sum_{j=1}^N Y_j}
+    \leq C\left( \sigma \sqrt{\log(n)} + K \log(n) \right)
+  \end{align}
+  We need to compute what $\sigma$ and $K$ are in this context.
+  Recall that $K$ was an almost sure upper bound on $\norm{Y_j}$.
+  \begin{align*}
+    \norm{Y_j} &= \norm{X_jX_j^{\top} - \Sigma} \\
+               &\leq \norm{X_j}^2 + \norm{\Sigma}
+  \end{align*}
+  We now use the hypothesis we had.
+  \begin{align*}
+    \norm{X_j}^2 &\leq S \E\norm{X}_2^2 \\
+                 &=S \E\left( \mathrm{tr}(X_j X_j^{\top}) \right) \\
+                 &= S \mathrm{tr}(\Sigma) \\
+                 &\leq Sn \norm{\Sigma}
+  \end{align*}
+  Thus, $K$ in this context in $S n \norm{\Sigma}$.
+
+  To compute $\sigma$, we do something similar.
+  \begin{align*}
+    \E Y_j^2 &= \E\left( X_jX_j^{\top} - \Sigma \right)^2 \\
+             &\leq \E\left( X_j X_j^{\top} \right)^2 \\
+             &\leq \norm{X_j}_2^2 \cdot \E \left( X_j X_j^\top \right) \\
+             &\leq Sn \norm{\Sigma} \Sigma
+  \end{align*}
+  The quantity $\sigma^2$ then works out to be less than $N S n \norm{\Sigma}^2$.
+  Plugging these values into \eqref{eq:9} gives us the result we want.
 \end{proof}
 
 

@@ -900,6 +900,147 @@ We now show a rather unexpected application of the Hanson-Wright inequality.
   \end{description}
 \end{proof}
 
+\subsection{Concentration for matrix-valued random variables}
+\label{sec:conc-matr-valu}
+
+So far, we have looked at concentration inequalities for functions acting on vector-valued random variables, more specifically, linear and quadratic functions on vectors of random variables.
+In this section, we will look at concentration inequalities for matrix valued random variables.
+We will start by proving the matrix Bernstein inequality.
+\begin{theorem}[Matrix Bernstein Inequality]
+  \label{thm:matrix-bernstein}
+  Let $\{X_1, \ldots, X_N\}$ be independent $n \times n$ symmetric random matrices satisfying the following conditions for some constant $K$ independent of $j$.
+  \begin{align*}
+    \E\left( X_j \right) &= 0 \\
+    \norm{X_j}_{\infty} &\leq K
+  \end{align*}
+  Let $\sigma^2$ denote the following quantity.
+  \begin{align*}
+    \sigma^2 \coloneqq \norm{\sum_{j=1}^N \E(X_j^2)}
+  \end{align*}
+  Then for any $t > 0$, we have the following tail bound on the sum of $X_j$.
+  \begin{align*}
+    \P\left( \norm{\sum_{j=1}^N X_j} > t \right)
+    \leq 2n \exp\left( -c \left( \frac{t^2}{\sigma^2} \wedge \frac{t}{K} \right) \right)
+  \end{align*}
+\end{theorem}
+\begin{remark}
+  Note that this inequality looks very similar to the original Bernstein inequality: the only difference is that the coefficient multiplied with $\exp$ in this case is $2n$, rather than $2$.
+  This means that the bound is not dimension independent, and that does cause issues in practice.
+  However, the bound is optimal.
+\end{remark}
+
+To prove Theorem \ref{thm:matrix-bernstein}, we will need the following linear algebraic result of Lieb.
+
+\begin{theorem}[Lieb's concavity theorem \cite{LIEB1973267}]
+  Let $H$ be an $n \times n$ symmetric matrix.
+  Consider the function $f$ defined on the set of $n \times n$ symmetric positive-definite matrices.
+  \begin{align*}
+    f(X) \coloneqq \mathrm{tr} \left( \exp\left( H + \log(X) \right) \right)
+  \end{align*}
+  The function $f$ is concave, i.e. for any $t \in [0,1]$, and any $X$ and $Y$ in the space of symmetric positive-definite matrices, the following inequality holds.
+  \begin{align*}
+    f(tX + (1-t)Y) \geq tf(X) + (1-t)f(Y)
+  \end{align*}
+\end{theorem}
+
+Using Lieb's concavity theorem and Jensen's inequality, we get the following corollary.
+\begin{corollary}
+  \label{cor:lieb}
+  Let $H$ be an $n \times n$ symmetric matrix, and let $Y$ be a random symmetric matrix.
+  Then the following inequality holds.
+  \begin{align}
+    \label{eq:2}
+    \E \left( \mathrm{tr} \left( \exp\left( H + Y \right) \right) \right)
+    \leq \mathrm{tr}\left( \exp\left( H + \log\left( \E(\exp(Y)) \right) \right) \right)
+  \end{align}
+\end{corollary}
+Using this corollary, we can prove the matrix Bernstein inequality.
+
+\begin{proof}[Proof of Theorem \ref{thm:matrix-bernstein}]
+  We begin by giving an easy upper bound for the norm of a symmetric matrix $X$.
+  \begin{align*}
+    \norm{X} \leq \lambda_{\mathrm{max}}(X) + \lambda_{\mathrm{max}}(-X)
+  \end{align*}
+  Here, $\lambda_{\mathrm{max}}(X)$ denotes the largest eigenvalue of $X$.
+  Expressed in terms of tail bounds, we get the following.
+  \begin{align*}
+    \P\left( \norm{\sum_{j=1}^N X_j} > t \right)
+    \leq \P\left( \lambda_{\mathrm{max}} \left( \sum_{j=1}^N X_j \right) > \frac{t}{2} \right)
+    + \P\left( \lambda_{\mathrm{max}} \left( \sum_{j=1}^N -X_j \right) > \frac{t}{2} \right)
+  \end{align*}
+  Note that it will suffice to get an upper bound for one of the terms on the right hand side, and multiply that by $2$.
+
+  Just like in the proof of Bernstein's inequality, it will help to bound the Laplace transformation of the random variables involved.
+  To do so, we need to chain several simplifying equalities and inequalities.
+  The first equality we get from the fact that the largest eigenvalue of the exponential of a symmetric matrix is the exponential of the largest eigenvalue of the original matrix.
+  \begin{align}
+    \label{eq:3}
+    \E\left( \exp\left( \lambda \lambda_{\mathrm{max}} \left( \sum_{j=1}^N X_j \right) \right) \right)
+    &= \E\left( \lambda_{\mathrm{max}} \exp\left( \lambda \left( \sum_{j=1}^N X_j\right) \right) \right)
+  \end{align}
+  Here, $\lambda$ is an arbitrary positive number.
+  Now note that $\exp$ of a symmetric matrix has only positive eigenvalues.
+  This means that the largest eigenvalue is smaller than the trace.
+  \begin{align}
+    \label{eq:4}
+    \E\left( \lambda_{\mathrm{max}} \exp\left( \lambda \left( \sum_{j=1}^N X_j\right) \right) \right)
+    \leq \E\left( \mathrm{tr} \exp\left( \lambda \left( \sum_{j=1}^{N-1} X_j + X_N\right) \right) \right)
+  \end{align}
+  We now condition on the values of $\{X_1, \ldots, X_{N-1}\}$, which lets us treat the right hand side of \eqref{eq:4} using \eqref{eq:2}.
+  \begin{align*}
+    \E\left( \mathrm{tr} \exp\left( \lambda \left( \sum_{j=1}^{N-1} X_j + X_N\right) \right) \right)
+    \leq \E\left( \mathrm{tr} \exp\left( \lambda \left( \sum_{j=1}^{N-1} X_j \right) + \log \E \exp\left( \lambda X_N \right) \right) \right)
+  \end{align*}
+  We repeat this process $N-2$ additional times, conditioning on all but the last $X_i$ to get the following inequality, combining \eqref{eq:3}, \eqref{eq:4}, and \eqref{eq:2}.
+  \begin{align}
+    \label{eq:5}
+    \E\left( \exp\left( \lambda \lambda_{\mathrm{max}} \left( \sum_{j=1}^N X_j \right) \right) \right)
+    \leq \mathrm{tr}\left( \exp\left[ \sum_{j=1}^N \log \E \exp\left( \lambda X_j \right)\right] \right)
+  \end{align}
+
+  We now deal with $\E \exp(\lambda X_j)$.
+  Note that for $t \in [0, 1]$, we have the following elementary inequality.
+  \begin{align*}
+    \exp(t) \leq 1 + t + t^2
+  \end{align*}
+  We can extend this to symmetric matrices, where the inequality $A \leq B$ is understood to mean that $B-A$ is positive definite.
+  \begin{align*}
+    \E \exp\left( \lambda X_j \right) &\leq I + \E(\lambda X_j) + \E\left( \lambda^2 X_j^2 \right) \\
+    &= I + \lambda^2 \E(X_j^2)
+  \end{align*}
+  Note that the above inequality holds when $\lambda$ is small enough such that the largest eigenvalue of $\lambda X_j$ is less than $1$.
+  Now we use the inequality $1 + x \leq \exp(x)$ to get an upper bound of $\exp\left( \lambda^2 \E(X_j^2) \right)$.
+  We combine this with \eqref{eq:5} to get the following.
+  \begin{align}
+    \label{eq:6}
+    \E\left( \exp\left( \lambda \lambda_{\mathrm{max}} \left( \sum_{j=1}^N X_j \right) \right) \right)
+    \leq \mathrm{tr} \left( \exp \left[ \sum_{j=1}^N \lambda^2 \E(X_j^2) \right] \right)
+  \end{align}
+  Now we again use the fact that the exponential of a symmetric matrix is positive definite to bound the trace above by $n$ times the largest eigenvalue.
+  \begin{align}
+    \label{eq:7}
+     \E\left( \exp\left( \lambda \lambda_{\mathrm{max}} \left( \sum_{j=1}^N X_j \right) \right) \right)
+    \leq n \lambda_{\mathrm{max}} \left( \exp \left[ \sum_{j=1}^N \lambda^2 \E(X_j^2) \right]\right)
+  \end{align}
+  Finally, we use the fact that $\lambda_{\mathrm{max}} X$ is less than or equal to $\norm{X}$ to get the upper bound in terms of matrix norm.
+  \begin{align}
+    \label{eq:8}
+    \E\left( \exp\left( \lambda \lambda_{\mathrm{max}} \left( \sum_{j=1}^N X_j \right) \right) \right)
+    &\leq n \left( \exp \left[ \lambda^2 \norm{\sum_{j=1}^N \E(X_j^2)}  \right]\right) \\
+    &\leq n \left( \exp \left[ \lambda^2 \sigma^2  \right]\right)
+  \end{align}
+
+  This gives a bound on the Laplace transformation of the random variable we were trying to tail bound.
+  We now use Markov's inequality to get the tail bound.
+  \begin{align*}
+    \P\left( \lambda_{\mathrm{max}} \left( \sum_{j=1}^N X_j\right) > \tau \right)
+    \leq n \exp\left( \lambda^2 \sigma^2 - \lambda \tau \right)
+  \end{align*}
+  Note that this bound comes from \eqref{eq:8}, which is only valid when $\lambda \max \norm{X_j} \leq 1$.
+  We optimize over the values of $\lambda$ now. This calculation is identical to the one we did for the original Bernstein inequality, and the tail bound follows.
+\end{proof}
+
+
 \printbibliography
 
 \end{document}

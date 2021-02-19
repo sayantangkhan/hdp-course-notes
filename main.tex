@@ -1147,6 +1147,79 @@ However, it's more useful to know how fast $\Sigma_N$ converges to $\Sigma$.
   Plugging these values into \eqref{eq:9} gives us the result we want.
 \end{proof}
 
+\section{Martingales}
+\label{sec:martingales}
+
+We begin by recalling the definition of a martingale.
+\begin{definition}[Martingale]
+  Let $\cF_0 \subset \cF_1 \subset \ldots \subset \cF_n$ be a filtration of sigma algebras of the sample space $\Omega$, with $\cF_0 = \{\emptyset, \Omega\}$.
+  A sequence of random variables $\{M_1, M_2, \ldots\}$ is said to be a martingale adapted with respect to the filtration $\{ cF_i\}$ if the following holds for all $i$ and $j$, where $j > i$.
+  \begin{align*}
+    \E\left( M_j \mid\ \cF_i \right) = M_i
+  \end{align*}
+\end{definition}
+
+Using the notion of a martingale, we can state a generalization of a special case of Hoeffding's inequality.
+
+\begin{theorem}[Azuma's martingale inequality]
+  \label{thm:azuma-martingale}
+  Let $\{M_j\}$ be a martingale. Assume that for all $j \geq 1$, there exist constants $d_j$ such that the following holds.
+  \begin{align*}
+    \norm{M_j - M_{j-1}}_{\infty} \leq d_j
+  \end{align*}
+  Then for any $t > 0$, we have the following concentration inequality for $M_n$.
+  \begin{align*}
+    \P\left( \left| M_n - \E M_n \right| > t \right)
+    \leq 2 \exp\left( - \frac{t^2}{\sum_{j=1}^n d_j^2} \right)
+  \end{align*}
+\end{theorem}
+To see how this is a generalization of a special case of Hoeffding's inequality, let $\{B_i\}$ be i.i.d copies of a random variable with zero mean whose absolute value is bounded by $1$ almost surely.
+If we define $M_n$ by $\sum_{j=1}^n d_jB_j$, then it's easy to verify that $\{M_n\}$ is a martingale satisfying the above hypotheses, and the tail bound in this case follows from Hoeffding's inequality.
+
+The reason why the martingale variant of the inequality requires more work is that it is not the case that all martingales are sums of independent random variables.
+However, it turns out that a lot of results that hold for sums of independent random variables can also be made to work for martingales.
+
+\begin{proof}[Proof of Theorem \ref{thm:azuma-martingale}]
+  We prove this concentration inequality again by estimating the Laplace transform of $M_n$.
+  Let $\lambda > 0$, and define $f$ in the following manner.
+  \begin{align*}
+    f(\lambda) = \E(\exp(\lambda M_n))
+  \end{align*}
+  To estimate the Laplace transform, we split up $M_n$ in an artificial manner.
+  \begin{align*}
+    \E(\exp(\lambda M_n))
+    &= \E(\exp(\lambda M_{n-1} + \lambda(M_n - M_{n+1})))
+  \end{align*}
+  Observe that since $M_{n-1}$ and $M_n - M_{n-1}$ are not necessarily independent, we cannot turn this into a product of expectations.
+  But we do know that the expectation of $M_{n} - M_{n-1}$ when conditioned on $M_{n-1}$ is $0$.
+  \begin{align*}
+    \E(\exp(\lambda M_{n-1} + \lambda(M_n - M_{n+1})))
+    &= \E\left( \exp\left( \lambda M_{n-1} \right)  \right)
+      \cdot \E\left( \exp(\lambda (M_n - M_{n-1})) \mid\ M_{n-1} \right)
+  \end{align*}
+  We deal with the second term in the product first.
+  To do, so consider the following elementary inequality, which we will state without proof.
+  For all $x \in \R$, the following holds.
+  \begin{align*}
+    e^x \leq x + e^{x^2}
+  \end{align*}
+  We use this to bound the second term of the product as follows.
+  \begin{align*}
+    \E\left( \exp(\lambda (M_n - M_{n-1})) \mid\ M_{n-1} \right)
+    &\leq \E\left( \lambda(M_n - M_{n-1}) \mid\ M_{n-1} \right) \\
+      &+ \E\left( \exp\left( \lambda^2(M_n - M_{n-1})^2 \right) \mid\ M_{n-1} \right)
+  \end{align*}
+  Observe that the first term vanishes, and the second term is bounded above by $\exp(\lambda^2 d_j^2)$.
+
+  To deal with the $\E\left( \exp\left( \lambda M_{n-1} \right) \right)$ term, we do the same thing to get an upper bound of $\exp(\lambda d_{j-1}^2)$.
+  We repeat this process inductively, to get the following bound.
+  \begin{align*}
+    \E\left( \exp\left( \lambda M_n \right) \right)
+    &\leq \exp\left( \lambda^2 \left( \sum_{j=1}^n d_j^2 \right) \right) \cdot \E\left( \lambda M_0 \right) \\
+    &= \exp\left( \lambda^2 \left( \sum_{j=1}^n d_j^2 \right) \right) \cdot \E\left( \lambda M_n \right)
+  \end{align*}
+  Using Markov's inequality, and optimizing over $\lambda$, the inequality follows.
+\end{proof}
 
 \printbibliography
 

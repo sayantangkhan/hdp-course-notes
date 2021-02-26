@@ -1492,10 +1492,15 @@ Lots of natural functions on $\Pi_n$ are $1$-Lipschitz.
   \begin{align*}
     \E\left[ f(\pi) \mid \cF_j \right] - \E\left[ f(\pi) \mid \cF_{j-1} \right]
     &= \E\left[ f(\pi) \mid \cF_j \right] - \E\left[ f(\pi^{\prime}) \mid \cF_{j-1} \right] \\
-    &= \E\left[ f(\pi) \mid \cF_j \right] - \E\left[ f(\pi \circ \sigma) \mid \cF_{j} \right] \\
+    &= \E\left[ f(\pi) \mid \cF_j \right] - \E\E_{\sigma} \left[ f(\pi \circ \sigma) \mid \cF_{j} \right] \\
     &= \E_{\pi} \left[ f(\pi) - \E_{\sigma} f(\pi \circ \sigma) \mid \cF_j \right]
   \end{align*}
-  {\color{red} \confused{  It is unclear how Rudelson goes from the first to second line in the above chain of equalities: this is possibly a mistake}} Using the fact that $f$ is $1$-Lipschitz, and $\sigma$ is a transposition, we see that $f(\pi)$ and $f(\pi \circ \sigma)$ differ by at most $2$.
+  The key equality in this chain of equalities is when $\E\left[ f(\pi^{\prime}) \mid \cF_{j-1} \right]$ turns into $\E\E_{\infty}\left[ f(\pi \circ \sigma) \mid \cF_{j} \right]$.
+  In the first term, we are fixing the first $j-1$ entries, and taking the average over the remaining entries.
+  In the second term, we are first fixing the first $j$ entries, computing the average over the remaining terms, and then computing the average of the average as we vary the $j$\textsuperscript{th} term.
+  It's clear that these two quantities must be equal.
+
+  Using the fact that $f$ is $1$-Lipschitz, and $\sigma$ is a transposition, we see that $f(\pi)$ and $f(\pi \circ \sigma)$ differ by at most $2$.
   Thus the martingale difference is bounded by $2$, and we can apply Azuma's inequality.
   \begin{align*}
     \P\left( \left| f(\pi) - \E f(\pi) \right| > t \right) \leq 2 \exp \left( - \frac{t^2}{16n} \right)

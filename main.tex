@@ -1624,6 +1624,59 @@ To do so, we need the Prékopa–Leindler inequality
   \end{description}
 \end{proof}
 
+We will consider several consequences of the Pr\'ekopa-Leindler inequality, starting with some elementary corollaries.
+\begin{corollary}
+  Let $X$ and $Y$ be independent log-concave random variables in $\R^n$, and let $E$ be a subspace of $\R^n$.
+  Then:
+  \begin{enumerate}[(1)]
+  \item The random variable $W = P_EX$ is log-concave.
+  \item For all real $a$ and $b$, $Z = aX + bY$ is log-concave.
+  \end{enumerate}
+\end{corollary}
+\begin{proof}
+  \begin{enumerate}[(1)]
+  \item Without loss of generality, we can assume that the subspace $E$ is the subspace where the last $n-k$ coordinates are $0$, where $k = \dim(E)$.
+    Given any $x \in \R^n$, we can write it as $(w, z)$, where $w$ is the projection to $E$.
+    By log-concavity, we have the following inequality involving the density $f_X$ of $X$ for all $\lambda \in (0,1)$.
+    \begin{align*}
+      f_X(\lambda w_1 + (1-\lambda)w_2, \lambda z_1 + (1-\lambda) z_2)
+      \geq \left( f_X(w_1, z_1) \right)^{\lambda} \cdot \left( f_X(w_2, z_2) \right)^{1-\lambda}
+    \end{align*}
+    By Pr\'ekopa-Leindler, we get the corresponding integral inequality when we integrate over $z$ keeping $w$ fixed.
+    But the integral of $f_X$ in the last $n-k$ coordinates is precisely the density of the pushforward measure.
+  \item Without loss of generality, assume $a=b=\frac{1}{\sqrt{2}}$.
+    Observe that the random vector $(X, Y) \in \R^{2n}$ is log-concave, since the $X$ and $Y$ are independent, and the joint density is the product of the individual densities.
+    Upon taking logarithm of the joint density, we get a sum of two concave functions, which must also be concave.
+    Furthermore, $aX+bY$ can be obtained by projecting $(X,Y)$ to an appropriate subspace of $\R^{2n}$.
+    The result then follows from $(1)$.
+  \end{enumerate}
+\end{proof}
+
+Another corollary that we get from Pr\'ekopa-Leindler is the Brunn-Minkowski inequality.
+\begin{corollary}[Brunn-Minkowski inequality]
+  Let $K$ and $D$ be compact subsets of $\R^n$.
+  Then the following inequality involving the Lebesgue measure of the Minkowski sum $K+D$ holds.
+  \begin{align*}
+    \left( m_n(K+D) \right)^{\frac{1}{n}} \geq \left( m_n(K) \right)^{\frac{1}{n}} + \left( m_n(D) \right)^{\frac{1}{n}}
+  \end{align*}
+\end{corollary}
+\begin{proof}
+  Let $A$ and $B$ be compact sets in $\R^n$ such that they have measure $1$.
+  Let $f = \mathbb{1}_A$, $g = \mathbb{1}_B$ and let $g = \mathbb{1}_{\lambda A + (1-\lambda)B}$.
+  Then we can verify that $f$, $g$, and $h$ satisfy the hypothesis of the Pr\'ekopa-Leindler inequality.
+  To see why that must be the case, observe that for any $x \in A$ and $y \in B$, $\lambda x + (1-\lambda )y$ must be in $\lambda A + (1-\lambda)B$, by the definition of the Minkowski sum.
+  Integrating the functions gives us the following inequality involving the Lebesgue measures.
+  \begin{align*}
+    m_n(\lambda A + (1-\lambda B)) \geq \left( m_n(A) \right)^{\lambda} \cdot \left( m_n(B) \right)^{1 - \lambda}
+  \end{align*}
+  Note that the right hand side is actually equal to $1$, so we get the following inequality.
+  \begin{align*}
+    m_n(\lambda A + (1-\lambda B))^{\frac{1}{n}} &\geq \lambda \left( m_n(A) \right)^{\frac{1}{n}} + (1-\lambda)(m_n(B))^{\frac{1}{n}} \\
+    &= \left( m_n( \lambda A) \right)^{\frac{1}{n}} + (m_n( (1-\lambda)B))^{\frac{1}{n}}
+  \end{align*}
+  Letting $K = \lambda A$ and $D = (1-\lambda)B$, we prove the result in the case when $K$ and $D$ have measure less than or equal to $1$.
+  Furthermore, since the inequality is homogeneous with respect to scalar multiplication, the general case follows.
+\end{proof}
 
 \printbibliography
 

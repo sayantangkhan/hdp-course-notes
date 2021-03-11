@@ -1678,6 +1678,110 @@ Another corollary that we get from Pr\'ekopa-Leindler is the Brunn-Minkowski ine
   Furthermore, since the inequality is homogeneous with respect to scalar multiplication, the general case follows.
 \end{proof}
 
+Another more involved application of Pr\'ekopa-Leindler inequality is the following result due to Khatri and Šidak.
+\begin{theorem}[Khatri-Šidak]
+  Let $\left\{g_1, \ldots, g_n\right\}$ be (not necessarily independent) centered normal random variables.
+  Then for any $\{a_1, \ldots, a_n\}$ in $\R_+$, the following holds.
+  \begin{align*}
+    \P\left( |g_1| < a_1, |g_2| < a_2,\cdots, |g_n| < a_n \right)
+    &\geq \prod_{i=1}^n \P\left( |g_i| < a_i \right)
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  Let $G$ be the standard Gaussian vector in $\R^n$: there exist vectors $\{x_1, \ldots, x_n\}$ such that $g_i = \langle G, x_i \rangle$.
+  The vectors $x_i$ can be easily recovered from the correlation matrix of the $g_i$.
+  We express the inequality we want to prove in terms of $G$.
+  \begin{align}
+    \label{eq:10}
+  \begin{gathered}
+    \P\left( |\langle G, x_1 \rangle| < a_1, \cdots, |\langle G, x_n \rangle| < a_n \right)
+    \geq \P\left( |\langle G, x_1 \rangle| < a_1, \cdots, |\langle G, x_{n-1} \rangle| < a_{n-1} \right) \\
+    \cdot \P\left( |\langle G, x_n \rangle| < a_n \right)
+  \end{gathered}
+  \end{align}
+
+  Define $K \subset \R^n$ as follows.
+  \begin{align*}
+    K \coloneqq \left\{ y \in \R^n \mid\ |\langle y, x_i \rangle| < a_i\text{ for $1\leq i \leq n-1$} \right\}
+  \end{align*}
+  Let $\gamma_n$ be the standard Gaussian measure in $\R^n$.
+  Then \eqref{eq:10} can be rewritten in terms of $K$ and $\gamma_n$.
+  \begin{align}
+    \label{eq:11}
+      \gamma_n(K \cap \left\{ |\langle y, x_n \rangle| < a_n \right\})
+      \geq \gamma_n(K) \cdot \gamma_n\left( \left\{ |\langle y, x_n \rangle| < a_n \right\} \right)
+  \end{align}
+  Observe that $K$ is centrally symmetric and convex.
+  We claim that \eqref{eq:11} holds for any convex centrally symmetric set.
+  We prove this claim by inducting on $n$.
+
+  Let $n=1$: then $K$ is the interval $[-b,b]$ for some constant $b$.
+  Similarly, the set $\left\{ |\langle y, x_1 \rangle| < a_1 \right\}$ is just $(-a_1, a_1)$.
+  The intersections of these two centrally symmetric sets is also centrally symmetric.
+  This gives the following chain of inequalities, proving the claim for $n=1$.
+  \begin{align*}
+    \gamma_1(K \cap \left\{ |\langle y, x_1 \rangle| < a_1 \right\})
+    &= \gamma_1\left( [-(b \wedge a_1), (b \wedge a_1)] \right) \\
+    &\geq \gamma_1([-b, b]) \cdot \gamma_1((-a_1, a_1))
+  \end{align*}
+
+  Assume now that \eqref{eq:11} holds in dimension $n$.
+  Let $K$ be a convex centrally symmetric body in $\R^{n+1}$ and let $S = \left\{ y \mid\ |\langle y, x_{n+1} \rangle| < a_{n+1} \right\}$.
+  We can also assume that $x_n$ is the $n+1$\textsuperscript{th} basis vector.
+  Then we can express the left hand side of the claimed inequality in the following manner.
+  \begin{align*}
+    \gamma_{n+1}(K \cap S)
+    &= \int_{\R} \gamma_n\left( K \cap \left\{ y \mid\ y_{n+1} = t \right\} \right)\cdot \mathbb{1}_{[-a_{n+1}, a_{n+1}]}(t) \dd \gamma_1(t)
+  \end{align*}
+  We can now interpret the right hand side as the expectation of $f(t)$, where $t$ is the standard Gaussian random variable.
+  Doing so lets us rewrite the right hand side in the following manner.
+  \begin{align}
+    \label{eq:12}
+    \gamma_{n+1}(K \cap S)
+    &= \int_{0}^{\infty} \gamma_1\left( \gamma_n\left( K \cap \{y \mid\ y_{n+1} \in [-a_{n+1}, a_{n+1}]\} \right) > s \right) \dd s
+  \end{align}
+  Let $E_s$ be a set defined in the following manner.
+  \begin{align*}
+    E_s \coloneqq \left\{ t \in \R \mid\ \gamma_n\left( K \cap \{y \mid\ y_{n+1} = t\} \right)  > s\right\}
+  \end{align*}
+  Then $E_s$ is centrally symmetric, because $K$ is centrally symmetric.
+  Moreover, $E_s$ is convex, i.e. $E_s = [-\theta(s), \theta(s)]$.
+  That is because $\psi(t) = \gamma_n(K \cap \{y \mid\ y_{n+1} = t\})$ is an even log-concave function, since this is a projection of a log-concave function.
+  Therefore, $\psi(t)$ is decreasing for $t \geq 0$.
+  Observe that we can express the quantity we care about in terms of $E_s$, using \eqref{eq:12}.
+  \begin{align*}
+    \gamma_{n+1}(K \cap S) &= \int_0^{\infty} \gamma_1\left( [-\alpha, \alpha] \cap E_s \right) \\
+                           &\geq \int_0^{\infty} \gamma_1\left( [-\alpha, \alpha] \right) \cdot \gamma_1(E_s) \\
+                           &= C_{\alpha} \cdot \int_0^{\infty} \gamma_1(E_s) \\
+                           &= \gamma_{n+1}(S) \cdot \gamma_n(K)
+  \end{align*}
+  This completes the proof of the theorem.
+\end{proof}
+\begin{remark}
+  A general version of this inequality, where rather than splitting up the normal random variables in groups of $n-1$ and $1$, one splits them up in groups of $n-m$ and $m$ was the Gaussian correlation inequality.
+  This inequality, which was a conjecture until 2014, attracted a lot of attention and resisted efforts to prove it for decades, until it was by Thomas Royen\footnote{See the \href{https://www.quantamagazine.org/statistician-proves-gaussian-correlation-inequality-20170328/}{Quanta article} that outlines this discovery that was almost neglected by the larger mathematical community.}.
+\end{remark}
+
+% We will now look at a combinatorial application of the Khatri-Šidak inequality.
+% \begin{theorem}[$6\sigma$ Theorem]
+%   Let $a_{ij}$ be numbers in $[-1, 1]$, as $i$ and $j$ range from $1$ to $n$.
+%   Then there exist $\{\varepsilon_i\}_{1 \leq i \leq n}$ in $\{-1, 1\}$ such that the following holds for all $i$.
+%   \begin{align*}
+%     \left| \sum_{j=1}^n \varepsilon_j a_j \right| \leq C \sqrt{n}
+%   \end{align*}
+% \end{theorem}
+% \begin{remark}
+%   If one randomly picks the $\varepsilon_i$, and uses Hoeffding's inequality to get the appropriate concentration inequality, one only ends up with an upper bound of the form $C \sqrt{n \log(n)}$.
+% \end{remark}
+% We will need a few lemmas in order to prove this theorem.
+% Before we state them, we set up some notation.
+% Let $\mathbf{g} = \left( g_1, \ldots, g_n \right)$ be the standard Gaussian vector.
+% Let $\gamma_n(A)$ denote $\P\left( g \in A \right)$.
+% \begin{lemma}
+%   Let $\{a_1, \ldots, a_m\}$ be vectors in $\R^n$ such that $\norm{a_j}_2 \leq \sqrt{n}$ for all $j$.
+%   Define the set $K_t$
+% \end{lemma}
+
 \printbibliography
 
 \end{document}

@@ -1782,6 +1782,100 @@ Another more involved application of Pr\'ekopa-Leindler inequality is the follow
 %   Define the set $K_t$
 % \end{lemma}
 
+We will now prove a Gaussian concentration inequality using the Pr\'ekopa-Leindler inequality.
+Let $\mathbf{g}$ be a standard Gaussian vector in $\R^n$.
+Denote $\gamma_n(A)$ to be the probability that $g \in A$ for a Borel subset $A$.
+\begin{theorem}[Geometric concentration inequality]
+  \label{thm:guassian-geometric}
+  Let $K$ be a closed set in $\R^n$.
+  For $t > 0$ let $K_t$ be the $t$-neighbourhood of $K$.
+  Then for any $t > 0$, the following holds.
+  \begin{align*}
+    \gamma_n\left( \left( K_t \right)^c \right) \leq \frac{\exp\left( - \frac{t^2}{4} \right)}{\gamma_n(K)}
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  We will choose functions $f$ and $h$ from $\R^n$ to $[0, +\infty]$ and find $g: \R^n \to [0, \infty]$ such that the triple $(f,g,h)$ satisfies the hypotheses for Pr\'ekopa-Leindler inequality.
+  Set $h$ and $f$ to be the following functions.
+  \begin{align*}
+    h(x) &= \exp\left( - \frac{\norm{x}_2^2}{2} \right) \\
+    h(x) &= \exp\left( - \frac{\norm{x}_2^2}{2} \right) \cdot \mathbb{1}_K(x)
+  \end{align*}
+  We want to find a $g$ that satisfies the hypotheses of Pr\'ekopa-Leindler for $\lambda = \frac{1}{2}$, i.e. the following inequality for all $x$ and $y$ in $\R^n$.
+  \begin{align*}
+    h\left( \frac{x+y}{2} \right) \geq \left( f(x) \right)^{\frac{1}{2}} \cdot \left( g(y) \right)^{\frac{1}{2}}
+  \end{align*}
+  Without loss of generality, we can focus on the values of $x$ that are contained in $K$, otherwise, the right hand side is $0$, and the inequality holds.
+  Taking logarithms on both sides gives us the following inequality that $g$ must satisfy for all $x \in K$ and $y \in \R^n$.
+  \begin{align*}
+    - \frac{1}{2} \norm{\frac{x+y}{2}}_2^2
+    \geq \frac{1}{2}\left( - \frac{\norm{x}_2^2}{2} \right) + \frac{1}{2} \log(g(y))
+  \end{align*}
+  Moving terms, we get the following constraint on $\phi(y) \coloneqq \log(g(y))$.
+  \begin{align*}
+    \phi(y) \leq \inf_{x \in K} \left[ \frac{\norm{x}_2^2}{2} - \norm{\frac{x+y}{2}}_2^2 \right]
+  \end{align*}
+  Defining $\phi(y)$ to be the right hand side, which makes the inequality hold trivially.
+  We can simplify terms to get a formula for $\phi(y)$.
+  \begin{align*}
+    \phi(y) &\coloneqq \inf_{x \in K} \left[ \frac{\norm{x}_2^2}{2} - \norm{\frac{x+y}{2}}_2^2 \right] \\
+            &= \inf_{x \in K} \left[ \frac{\norm{x-y}_2^2}{4} \right] - \frac{\norm{y}_2^2}{2} \\
+            &= \frac{ \mathrm{dist}(y, K)^2}{4}  - \frac{\norm{y}_2^2}{2}
+  \end{align*}
+  This gives us the formula for $g$.
+  \begin{align*}
+    g(y) = \exp\left( \frac{\mathrm{dist}(y, K)^2}{4} \right) \cdot \exp\left( - \frac{\norm{y}_2^2}{2} \right)
+  \end{align*}
+  The Pr\'ekopa-Leindler inequality then gives us the corresponding integral inequality, which we multiply by $\left( 2 \pi \right)^{- \frac{n}{2}}$ to be able to interpret the integrands as integrals against the Gaussian probability measure.
+  \begin{align*}
+    \int_{\R^n} \left( 2\pi \right)^{-\frac{n}{2}} h(x) \dd x
+    &\geq \left( \int_{\R^n}\left( 2\pi \right)^{-\frac{n}{2}} f(x) \dd x \right)^{\frac{1}{2}}
+      \left( \int_{\R^n}\left( 2\pi \right)^{-\frac{n}{2}} g(x) \dd x \right)^{\frac{1}{2}}
+  \end{align*}
+  Observe that the left hand side is $1$, the first term on the right hand side is the measure of the set $K$, and the second term is the expectation of the random variable $\exp\left( \frac{\mathrm{dist}(y, K)^2}{4} \right)$.
+  \begin{align*}
+    1 \geq \gamma_n(K) \cdot \E \exp\left( \frac{\mathrm{dist}(y, K)^2}{4} \right)^{\frac{1}{2}}
+  \end{align*}
+  The claim then follows from an application of Markov's inequality.
+\end{proof}
+From the geometric concentration inequality, we can immediately derive the functional version.
+\begin{theorem}[Functional concentration inequality]
+  Let $F: \R^n \to \R$ be a $1$-Lipschitz function.
+  Set $M = \mathrm{Median}(F)$, i.e. $\P(F(\mathbf{g}) \leq M) \geq \frac{1}{2}$ and $\P\left( F(\mathbf{g}) \geq M \right) \geq \frac{1}{2}$, where $\mathbf{g}$ is a standard Gaussian vector.
+  Then for any $t > 0$, $F(x)$ concentrates near the median in the following manner.
+  \begin{align*}
+    \P\left( \left| F(x) - M \right| > t \right) \leq 4 \exp\left( - \frac{t^2}{4} \right)
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  Let $K$ be the set of all points $x$ in $\R^n$ such that $F(x) \leq M$.
+  We have that $\gamma_n(K) \geq \frac{1}{2}$.
+  Since $F$ is $1$-Lipschitz, we have that the set of points $x$ where $F(x) \geq M+t$ is contained in $\left( K_t \right)^c$.
+  Applying Theorem \ref{thm:guassian-geometric} gives us the claimed inequality.
+  \begin{align*}
+    \P\left( F(x) < M + t \right) &\leq \gamma_n(\left( K_t \right)^c) \\
+                                  &\leq \frac{\exp\left( - \frac{t^2}{4} \right)}{\gamma_n(K)} \\
+    &\leq 2 \exp\left( - \frac{t^2}{4} \right)
+  \end{align*}
+  Doing so for the probability that $F(x) < M - t$ and taking union bound gives us the result.
+\end{proof}
+\begin{remark}
+  We can also obtain a subgaussian concentration around the $\E F(x)$, possibly with a worse constant on the exponent by obtaining a uniform upper bound on the distance between the median and the mean.
+\end{remark}
+
+We also get an easy corollary about the concentration of the norm of a Gaussian matrix.
+\begin{corollary}
+  Let $G$ be an $n \times m$ matrix with i.i.d $\mathcal{N}(0, 1)$ entries.
+  Then for all $t > 0$, the norm of $G$ concentrates around its mean in the manner described below.
+  \begin{align*}
+    \P\left( \left| \norm{G} - \E \norm{G} \right| > t \right) \leq 2 \exp(-ct^2)
+  \end{align*}
+\end{corollary}
+\begin{proof}
+  The matrix norm is a $1$-Lipschitz function with respect the the $L^2$ norm when the matrix is considered as a vector in $\R^{n \times m}$.
+  The proof then follows from the functional concentration inequality.
+\end{proof}
+
 \printbibliography
 
 \end{document}

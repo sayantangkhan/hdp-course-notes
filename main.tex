@@ -1876,6 +1876,118 @@ We also get an easy corollary about the concentration of the norm of a Gaussian 
   The proof then follows from the functional concentration inequality.
 \end{proof}
 
+For the above estimate to be useful in practice, one also needs to know $\E\norm{G}$.
+The expected value of the matrix norm depends on $n$ and $k$ in the following manner.
+\begin{align*}
+  c(\sqrt{n} + \sqrt{k}) \leq \E \norm{G} \leq C (\sqrt{n} + \sqrt{k})
+\end{align*}
+Here, $c$ and $C$ are some absolute constants.
+The lower bound is easy to obtain, and left as an exercise.
+To obtain the upper bound, it will be convenient to have the framework of packings, coverings, and nets.
+
+\subsection*{Packings, coverings, and nets}
+
+\begin{definition}
+  Let $(X, d)$ be a metric space.
+  Let $\varepsilon > 0$ and let $K \subset X$.
+  A set $N \subset X$ is said to be an $\varepsilon$-net if the $\varepsilon$-neighbourhood of $N$ contains $K$.
+  The minimal cardinality of $N$ for a fixed $\varepsilon$, denoted $N(K, d, \varepsilon)$ is called the covering number of $K$.
+\end{definition}
+
+\begin{definition}
+  A set $P \subset K$ is called an $\varepsilon$-separated set if for all $x$ and $y$ in $P$, $d(x,y) > \varepsilon$.
+  The maximal cardinality of a separating set for $K$, denoted by $P(K, d, \varepsilon)$ is called the packing number of $K$.
+\end{definition}
+
+We will be interested in obtaining precise relationships between the covering and packing numbers for compact sets $K$.
+
+\begin{lemma}
+  Let $K \subset X$ in the metric space $(X, d)$.
+  Then for any $\varepsilon > 0$, the packing and covering numbers are commensurate as we scale $\varepsilon$.
+  \begin{align*}
+    P(K, d, 2 \varepsilon) \leq N(K, d, \varepsilon) \leq P(K, d, \varepsilon)
+  \end{align*}
+\end{lemma}
+We skip the proof of this fact, since it is fairly elementary.
+
+We can also relate the covering number to Lebesgue measure.
+\begin{theorem}[Volumetric estimate]
+  Let $X = \left( \R^n, \norm{\cdot}_X \right)$ be a normed space.
+  Then for any $K \subset X$, and any $\varepsilon > 0$, the following holds.
+  \begin{align*}
+    N(K, \norm{\cdot}_X, \varepsilon) \leq \frac{m_n\left( K+\frac{\varepsilon}{2}B_X \right)}{m_n \left( \frac{\varepsilon}{2}B_X \right)}
+  \end{align*}
+  Here, $m_n$ is the Lebesgue measure, $B_X$ is the unit ball, and $+$ is the Minkowski sum operation.
+\end{theorem}
+\begin{proof}
+  We will prove the inequality for the packing number, and since the packing number is always greater than or equal to the covering number, the result will follow.
+  Let $\mathcal{P}$ be an $\varepsilon$-separated set.
+  For all $x$ and $x^{\prime}$ in $\mathcal{P}$, if $x \neq x^{\prime}$, then $B_X\left( x, \frac{\varepsilon}{2} \right)$ and $B_X\left( x^{\prime}, \frac{\varepsilon}{2} \right)$ are disjoint.
+  The union of these balls is contained in $K + \frac{\varepsilon}{2}B_X$.
+  The result then follows.
+\end{proof}
+One can estimate the covering number of $B_X$ from this theorem, by setting $K = B_X$: this gives us that the covering number of $B_X$ is less than $\left( 1 + \frac{2}{\varepsilon} \right)^n$.
+
+We now go back to our problem of estimating the upper bound for the expected norm of a standard Gaussian $n \times k$ matrix.
+Let $A$ be a linear operator from the normed space $X = (\R^k, \norm{\cdot}_X)$ to $Y = \left( \R^n, \norm{\cdot}_Y \right)$.
+\begin{lemma}
+  Let $\mathcal{N}$ be an $\varepsilon$-net for $B_X$ for some $\varepsilon \in (0,1)$.
+  Then we have the following estimate for the operator norm of $A$.
+  \begin{align*}
+    \norm{A}_{\mathrm{op}} \leq \frac{1}{1 - \varepsilon} \max_{x \in \mathcal{N}} \norm{Ax}_Y
+  \end{align*}
+\end{lemma}
+\begin{proof}
+  Let $y$ be the point $B_X$ where $\norm{Ay}_Y$ is maximized.
+  Since $\mathcal{N}$ is an $\varepsilon$-net, there exists an $x \in \mathcal{N}$ within distance $\varepsilon$ of $y$.
+  \begin{align*}
+    \norm{A}_{\mathrm{op}} &= \norm{Ay}_Y \\
+                           &= \norm{Ax + A(y-x)}_Y \\
+                           &\leq \norm{Ax}_Y + \norm{A(y-x)}_Y \\
+                           &\leq \max_{x \in \mathcal{N}} \norm{Ax}_Y + \varepsilon \norm{A}_{\mathrm{op}}
+  \end{align*}
+  This proves the result.
+\end{proof}
+If both the norms are the standard Euclidean norms, we get the following corollary by applying the lemma twice.
+\begin{corollary}
+  If $\mathcal{N}$ is an $\varepsilon$-net for $B_X$ and $\mathcal{M}$ is a $\varepsilon$-net for $B_Y$, then the $L^2$-operator norm of $A$ is bounded above by the following quantity.
+  \begin{align*}
+    \norm{A} \leq \frac{1}{(1-\varepsilon)^2} \max_{x \in \mathcal{N}} \max_{y \in \mathcal{M}} \langle Ax, y \rangle
+  \end{align*}
+\end{corollary}
+
+We can use this results about the $L^2$-operator norm to get lower bounds on the expectation of the norm of the standard $n \times k$ Gaussian matrix.
+We first need the following lemma.
+\begin{lemma}
+  For any $t > 0$, we have the following tail bound on $\norm{G}$.
+  \begin{align*}
+    \P\left( \norm{G} > C(\sqrt{n} + \sqrt{k}) + t \right) \leq 2 \exp\left( - \frac{t^2}{4} \right)
+  \end{align*}
+\end{lemma}
+\begin{proof}
+  Let $\mathcal{N}$ be a $\frac{1}{2}$-net for $B_2^k$ and $\mathcal{M}$ be $\frac{1}{2}$-net for $B_2^n$ such that their cardinalities are bounded by the following quantities, coming from the volumetric estimates.
+  \begin{align*}
+    |\mathcal{N}| &\leq \left( \frac{3}{\varepsilon} \right)^k \\
+    |\mathcal{M}| &\leq \left( \frac{3}{\varepsilon} \right)^n
+  \end{align*}
+  From the corollary, we have the following upper bound on $\norm{G}$.
+  \begin{align*}
+    \norm{G} \leq 4 \max_{x \in \mathcal{N}} \max_{y \in \mathcal{M}} \langle Gx, y \rangle
+  \end{align*}
+  To get the tail estimate for this maximum of random variables, we can find a tail estimate for each $x$ and $y$, and then use the union bound.
+  \begin{align*}
+    \P\left( \langle Gx, y \rangle > s \right)
+    &= \P \left( \sum_{i=1}^k  \sum_{j=1}^n g_{ij} x_i y_j > s\right)
+  \end{align*}
+  Observe that $\sum g_{ij} x_i y_j$ is distributed like $\mathcal{N}(0, \norm{x}_2^2 \norm{y}_2^2)$.
+  Since $x$ and $y$ are in the unit ball, the product of their norms is less than $1$.
+  We therefore get the the individual tail bound is less than $\exp\left( - \frac{s^2}{2} \right)$.
+  Plugging in the volumetric estimate gives the result.
+\end{proof}
+\begin{remark}
+  This result also works for centered subgaussian random variables.
+\end{remark}
+
 \printbibliography
 
 \end{document}

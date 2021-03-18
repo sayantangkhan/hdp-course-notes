@@ -1885,7 +1885,7 @@ Here, $c$ and $C$ are some absolute constants.
 The lower bound is easy to obtain, and left as an exercise.
 To obtain the upper bound, it will be convenient to have the framework of packings, coverings, and nets.
 
-\subsection*{Packings, coverings, and nets}
+\paragraph{Packings, coverings, and nets}
 
 \begin{definition}
   Let $(X, d)$ be a metric space.
@@ -1981,12 +1981,67 @@ We first need the following lemma.
   \end{align*}
   Observe that $\sum g_{ij} x_i y_j$ is distributed like $\mathcal{N}(0, \norm{x}_2^2 \norm{y}_2^2)$.
   Since $x$ and $y$ are in the unit ball, the product of their norms is less than $1$.
-  We therefore get the the individual tail bound is less than $\exp\left( - \frac{s^2}{2} \right)$.
+  We therefore get the individual tail bound is less than $\exp\left( - \frac{s^2}{2} \right)$.
   Plugging in the volumetric estimate gives the result.
 \end{proof}
 \begin{remark}
   This result also works for centered subgaussian random variables.
 \end{remark}
+
+\paragraph{Milman-Dvoretzky theorem}
+
+We now consider another application of the Gaussian concentration inequality: the Milman-Dvoretzky theorem, which is a key ingredient of the Dvoretzky theorem.
+\begin{theorem}[Dvoretzky]
+  \label{thm:dvo}
+  Let $Y = \left( \R^n, \norm{\cdot}_Y \right)$ be a normed space.
+  For any $\varepsilon > 0$, there exists a Euclidean norm $\norm{\cdot}_\varepsilon$ on $\R^n$ and a linear subspace $E$ with $\dim(E) \geq c(\varepsilon) \cdot \log(n)$ such that for all $x \in E$, the Euclidean norm agrees with the ambient norm up to an error of $\varepsilon$.
+  \begin{align*}
+    (1-\varepsilon) \cdot \norm{x}_\varepsilon \leq \norm{x}_Y \leq (1+\varepsilon)\cdot \norm{x}_\varepsilon
+  \end{align*}
+\end{theorem}
+
+Before we present the proof, we will need to set up some notation.
+Let $b(Y)$ be $\max_{x \in S^{n-1}} \norm{x}_Y$, where $Y$ is the normed space in theorem \ref{thm:dvo}.
+Let $\mathbf{g}$ be the standard Gaussian vector in $\R^n$: we define the Dvoretzky dimension $\mathrm{Dv}$ of $Y$ as follows.
+\begin{align*}
+  \mathrm{Dv}(Y) \coloneqq \left( \frac{\E \norm{g}_Y}{b(Y)} \right)^2
+\end{align*}
+
+We compute the Dvoretzky dimension for a few well known normed spaces.
+\begin{example}
+  \begin{enumerate}[(1)]
+  \item $Y = \ell_1^n$: In this case $b(Y) = \sqrt{n}$, and $\E\norm{g}_Y = cn$ for a fixed constant $c$.
+    This means that the Dvoretzky dimension of $\ell_1^n$ is $c^2n$, i.e. it is proportional to the real dimension.
+  \item $Y = \ell_2^n$: In this case $b(Y) = 1$, and $\E\norm{g}_Y$ which is smaller than $\sqrt{n}(1 - o(1))$, and thus the Dvoretzky dimension is $O(n)$.
+  \item $Y = \ell_{\infty}^n$: In this case $b(Y) = 1$, and $\E\norm{g}_Y$ is bounded above and below by $\sqrt{\log(n)}$ times appropriate constants.
+    This the Dvoretzky dimension is $\Omega(\log(n))$.
+  \end{enumerate}
+\end{example}
+\begin{fact}
+  The Dvoretzky dimension cannot exceed the actual dimension of the normed space.
+\end{fact}
+We can now state the Milman-Dvoretzky theorem.
+\begin{theorem}
+  \label{thm:mil-dvo}
+  Let $Y = \left( \R^n, \norm{\cdot}_Y \right)$ be a normed space.
+  Let $\varepsilon > 0$ and let $E \subset \R^n$ be a random linear subspace of dimension $k = \lfloor c(\varepsilon) \mathrm{Dv}(Y) \rfloor$, where $c(\varepsilon)$ is a function of $\varepsilon$.
+  Then with probability $1 - \exp\left( -C \varepsilon^2 k \right)$, the following inequality holds for all $x$ in $E$.
+  \begin{align*}
+    (1-\varepsilon)M(Y)\norm{x}_2 \leq \norm{x}_Y \leq (1+\varepsilon)M(Y)\norm{x}_2
+  \end{align*}
+  Here, $M(Y)$ only depends on $Y$.
+\end{theorem}
+
+\begin{example}
+  % \begin{enumerate}[(1)]
+  \item Let $Y = \ell_1^n$: In this case, we can let $k = \frac{c \varepsilon^2}{\log\left( \frac{1}{\varepsilon} \right)} \cdot n$
+    This may seem counter-intuitive, since random sections of polytopes in $\R^n$ end up looking very close to ellipses.
+  % \end{enumerate}
+\end{example}
+
+\begin{proof}[Proof of Theorem \ref{thm:mil-dvo}]
+
+\end{proof}
 
 \printbibliography
 

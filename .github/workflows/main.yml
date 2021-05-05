@@ -13,6 +13,7 @@ jobs:
         uses: sayantangkhan/latex-action@v3
         with:
           root_file: main.tex
+          pre_compile: "/bin/sh scripts/pre_compile_script.sh"
           post_compile: "cp main.pdf web/"
       - name: Push to gh-pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
